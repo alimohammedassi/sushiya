@@ -311,7 +311,11 @@ class CartScreen extends StatelessWidget {
                                   IconButton(
                                     onPressed: () =>
                                         cartProvider.decreaseQuantity(item.id),
-                                    icon: const Icon(Icons.remove, size: 18),
+                                    icon: const Icon(
+                                      Icons.remove_circle_outline_rounded,
+                                      size: 21,
+                                      color: Colors.red,
+                                    ),
                                     constraints: const BoxConstraints(
                                       minWidth: 35,
                                       minHeight: 35,
@@ -331,7 +335,16 @@ class CartScreen extends StatelessWidget {
                                   IconButton(
                                     onPressed: () =>
                                         cartProvider.increaseQuantity(item.id),
-                                    icon: const Icon(Icons.add, size: 18),
+                                    color: const Color.fromARGB(
+                                      255,
+                                      45,
+                                      179,
+                                      19,
+                                    ),
+                                    icon: const Icon(
+                                      Icons.add_circle_outline_outlined,
+                                      size: 30,
+                                    ),
                                     constraints: const BoxConstraints(
                                       minWidth: 35,
                                       minHeight: 35,
