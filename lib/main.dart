@@ -1,11 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:sushiaya/screens/cartPro.dart';
+import 'package:sushiaya/screens/intro1.dart';
 
-import 'package:sushiaya/screens/intro1.dart'; // or whatever your intro screen file is
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
 
-void main() {
-  runApp(const MyApp());
+  runApp(
+    EasyLocalization(
+      supportedLocales: [
+        Locale('en', 'US'), // English
+        Locale('ar', 'SA'), // Arabic
+      ],
+      path: 'assets/translations', // Path to your translation files
+      fallbackLocale: Locale('en', 'US'),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -16,10 +29,13 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => CartProvider(),
       child: MaterialApp(
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
         debugShowCheckedModeBanner: false,
         title: 'Sushiaya',
         theme: ThemeData(primarySwatch: Colors.orange),
-        home: const intro1(), // Your intro screen
+        home: const intro1(),
       ),
     );
   }

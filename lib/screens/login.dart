@@ -5,6 +5,7 @@ import 'package:sushiaya/screens/home.dart';
 import 'package:provider/provider.dart';
 import 'package:sushiaya/screens/sign.dart';
 import 'cartPro.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 
 // Add this import for your home page
@@ -48,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-            'Login Successful!',
+            'login_successful!',
             style: TextStyle(color: Colors.black54, fontSize: 20),
           ),
           backgroundColor: Color.fromARGB(255, 255, 172, 57),
@@ -95,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 // Welcome text
                 Text(
-                  'Welcome Back!',
+                  'login.welcome_back'.tr(),
                   style: GoogleFonts.lato(
                     color: Colors.white,
                     fontSize: 32,
@@ -106,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 10),
 
                 Text(
-                  'Sign in to continue your sushi journey',
+                  'login.sign_in_continue'.tr(),
                   style: GoogleFonts.lato(
                     color: Colors.white.withOpacity(0.8),
                     fontSize: 16,
@@ -118,17 +119,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Email field
                 _buildTextField(
                   controller: _emailController,
-                  label: 'Email',
+                  label: 'login.email'.tr(),
                   icon: Icons.email_outlined,
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
+                      return 'login.enter_email'.tr();
                     }
                     if (!RegExp(
                       r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
                     ).hasMatch(value)) {
-                      return 'Please enter a valid email';
+                      return  'login.valid_email'.tr();
                     }
                     return null;
                   },
@@ -139,15 +140,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Password field
                 _buildTextField(
                   controller: _passwordController,
-                  label: 'Password',
+                  label: 'login.password'.tr(),
                   icon: Icons.lock_outline,
                   isPassword: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
+                      return 'login.enter_password'.tr();
                     }
                     if (value.length < 6) {
-                      return 'Password must be at least 6 characters';
+                      return 'login.password_length'.tr();
                     }
                     return null;
                   },
@@ -163,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       // Handle forgot password
                     },
                     child: Text(
-                      'Forgot Password?',
+                      'login.forgot_password'.tr(),
                       style: GoogleFonts.lato(
                         color: Colors.white.withOpacity(0.9),
                         fontSize: 14,
@@ -176,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 // Login button
                 SushiayaButton(
-                  text: "LOGIN",
+                  text: "login.login_button".tr(),
                   width: double.infinity,
                   height: 60,
                   isLoading: _isLoading,
@@ -197,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
-                        'OR',
+                       'login.or'.tr(),
                         style: GoogleFonts.lato(
                           color: Colors.white.withOpacity(0.7),
                           fontSize: 14,
@@ -217,7 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 // Sign up button
                 SushiayaButton(
-                  text: "CREATE NEW ACCOUNT",
+                  text: "login.create_account".tr(),
                   width: double.infinity,
                   height: 50,
                   isOutlined: true,

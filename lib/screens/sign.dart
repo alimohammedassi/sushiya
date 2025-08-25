@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sushiaya/screens/button.dart';
 import 'package:sushiaya/screens/home.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -37,8 +37,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (_formKey.currentState!.validate()) {
       if (!_acceptTerms) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please accept the terms and conditions'),
+          SnackBar(
+            content: Text('signup.accept_terms'.tr()),
             backgroundColor: Colors.red,
           ),
         );
@@ -58,8 +58,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Account Created Successfully!'),
+        SnackBar(
+          content: Text('signup.account_created'.tr()),
           backgroundColor: Colors.green,
           duration: Duration(seconds: 1),
         ),
@@ -100,7 +100,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 // Welcome text
                 Text(
-                  'Join Sushiaya!',
+                  'signup.join_sushiaya'.tr(),
                   style: GoogleFonts.lato(
                     color: Colors.white,
                     fontSize: 32,
@@ -111,7 +111,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(height: 10),
 
                 Text(
-                  'Create your account to start ordering',
+                  'signup.create_account_start'.tr(),
                   style: GoogleFonts.lato(
                     color: Colors.white.withOpacity(0.8),
                     fontSize: 16,
@@ -123,11 +123,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 // Full Name field
                 _buildTextField(
                   controller: _nameController,
-                  label: 'Full Name',
+                  label: 'signup.full_name'.tr(),
                   icon: Icons.person_outline,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your full name';
+                      return 'signup.enter_name'.tr();
                     }
                     return null;
                   },
@@ -138,17 +138,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 // Email field
                 _buildTextField(
                   controller: _emailController,
-                  label: 'Email',
+                  label: 'signup.email'.tr(),
                   icon: Icons.email_outlined,
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
+                      return 'signup.enter_email'.tr();
                     }
                     if (!RegExp(
                       r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
                     ).hasMatch(value)) {
-                      return 'Please enter a valid email';
+                      return 'signup.valid_email'.tr();
                     }
                     return null;
                   },
@@ -159,12 +159,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 // Phone field
                 _buildTextField(
                   controller: _phoneController,
-                  label: 'Phone Number',
+                  label: 'signup.phone'.tr(),
                   icon: Icons.phone_outlined,
                   keyboardType: TextInputType.phone,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your phone number';
+                      return 'signup.enter_phone'.tr();
                     }
                     return null;
                   },
@@ -175,7 +175,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 // Password field
                 _buildTextField(
                   controller: _passwordController,
-                  label: 'Password',
+                  label: 'signup.password'.tr(),
                   icon: Icons.lock_outline,
                   isPassword: true,
                   isPasswordVisible: _isPasswordVisible,
@@ -186,10 +186,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
+                      return 'signup.enter_password'.tr();
                     }
                     if (value.length < 6) {
-                      return 'Password must be at least 6 characters';
+                      return 'signup.password_length'.tr();
                     }
                     return null;
                   },
@@ -200,7 +200,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 // Confirm Password field
                 _buildTextField(
                   controller: _confirmPasswordController,
-                  label: 'Confirm Password',
+                  label: 'signup.confirm_password'.tr(),
                   icon: Icons.lock_outline,
                   isPassword: true,
                   isPasswordVisible: _isConfirmPasswordVisible,
@@ -211,10 +211,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please confirm your password';
+                      return 'signup.confirm_password_text'.tr();
                     }
                     if (value != _passwordController.text) {
-                      return 'Passwords do not match';
+                      return 'signup.passwords_not_match'.tr();
                     }
                     return null;
                   },
@@ -244,7 +244,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           });
                         },
                         child: Text(
-                          'I accept the Terms & Conditions and Privacy Policy',
+                          'signup.terms_conditions'.tr(),
                           style: GoogleFonts.lato(
                             color: Colors.white.withOpacity(0.9),
                             fontSize: 14,
@@ -259,7 +259,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 // Sign up button
                 SushiayaButton(
-                  text: "CREATE ACCOUNT",
+                  text: "signup.create_account".tr(),
                   width: double.infinity,
                   height: 60,
                   isLoading: _isLoading,
@@ -279,9 +279,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           fontSize: 16,
                         ),
                         children: [
-                          const TextSpan(text: "Already have an account? "),
+                          TextSpan(text: "signup.already_account".tr()),
                           TextSpan(
-                            text: "Login",
+                            text: "signup.login".tr(),
                             style: GoogleFonts.lato(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,

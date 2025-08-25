@@ -1,8 +1,10 @@
+// ignore_for_file: use_super_parameters
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'cartPro.dart';
-import 'button.dart'; // Import your SushiayaButton
+import 'package:easy_localization/easy_localization.dart';
 
 enum SelectedTab { home, cart, profile }
 
@@ -21,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 200),
       vsync: this,
     );
   }
@@ -70,30 +72,254 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true,
+      extendBody: false,
+      appBar: _buildAppBar(),
       body: _getSelectedScreen(),
       bottomNavigationBar: _buildModernBottomNav(),
     );
   }
 
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      backgroundColor: const Color(0xFFD5860F),
+      elevation: 0,
+      centerTitle: true,
+      title: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.15),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.25),
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.restaurant_menu,
+                color: Colors.white,
+                size: 16,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'Sushiaya',
+              style: GoogleFonts.lato(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.5,
+                shadows: [
+                  Shadow(
+                    color: Colors.black.withOpacity(0.2),
+                    offset: const Offset(0, 1),
+                    blurRadius: 2,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        Container(
+          margin: const EdgeInsets.only(right: 12),
+          child: Stack(
+            children: [
+              IconButton(
+                onPressed: () {
+                  // TODO: Open notifications
+                  _showNotificationSnackBar();
+                },
+                icon: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.3),
+                      width: 1,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.notifications_none_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                ),
+              ),
+              // Notification badge
+              Positioned(
+                right: 8,
+                top: 8,
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(color: Colors.white, width: 1),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+      leading: Container(
+        margin: const EdgeInsets.only(left: 12),
+        child: IconButton(
+          onPressed: () {
+            // TODO: Open menu or profile
+            _showMenuSnackBar();
+          },
+          icon: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.3),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: const Icon(
+              Icons.menu_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
+          ),
+        ),
+      ),
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(1),
+        child: Container(
+          height: 1,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.transparent,
+                Colors.white.withOpacity(0.3),
+                Colors.transparent,
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showNotificationSnackBar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.notifications_active,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Notifications coming soon!',
+                style: GoogleFonts.lato(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: const Color(0xFFD5860F),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        margin: const EdgeInsets.all(16),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _showMenuSnackBar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(Icons.menu_book, color: Colors.white, size: 20),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Menu options coming soon!',
+                style: GoogleFonts.lato(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: const Color(0xFFD5860F),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        margin: const EdgeInsets.all(16),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
   Widget _buildModernBottomNav() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Colors.white, Colors.grey[50]!],
-        ),
-        borderRadius: BorderRadius.circular(30),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(25),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.15),
-            blurRadius: 25,
-            offset: const Offset(0, 10),
-          ),
-          BoxShadow(
-            color: const Color(0xFFD5860F).withOpacity(0.1),
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
@@ -101,8 +327,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         border: Border.all(color: Colors.grey[200]!, width: 1),
       ),
       child: Container(
-        height: 80,
-        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
+        height: 70,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -147,23 +373,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return GestureDetector(
       onTap: () => _handleIndexChanged(index),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          gradient: isSelected
-              ? const LinearGradient(
-                  colors: [Color(0xFFD5860F), Color(0xFFE89C2C)],
-                )
-              : null,
-          color: isSelected ? null : Colors.transparent,
-          borderRadius: BorderRadius.circular(25),
+          color: isSelected ? const Color(0xFFD5860F) : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: const Color(0xFFD5860F).withOpacity(0.3),
-                    blurRadius: 15,
-                    offset: const Offset(0, 5),
+                    color: const Color(0xFFD5860F).withOpacity(0.2),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
                   ),
                 ]
               : [],
@@ -175,34 +396,36 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               clipBehavior: Clip.none,
               children: [
                 AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
+                  duration: const Duration(milliseconds: 150),
                   child: Icon(
                     isSelected ? icon : unselectedIcon,
                     key: ValueKey(isSelected),
                     color: isSelected ? Colors.white : Colors.grey[600],
-                    size: isSelected ? 28 : 24,
+                    size: isSelected ? 26 : 22,
                   ),
                 ),
                 if (hasNotification && notificationCount > 0)
                   Positioned(
-                    right: -8,
-                    top: -6,
+                    right: -6,
+                    top: -4,
                     child: Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(3),
                       constraints: const BoxConstraints(
-                        minWidth: 18,
-                        minHeight: 18,
+                        minWidth: 16,
+                        minHeight: 16,
                       ),
                       decoration: BoxDecoration(
                         color: Colors.red,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.white, width: 2),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.white, width: 1.5),
                       ),
                       child: Text(
-                        notificationCount.toString(),
+                        notificationCount > 99
+                            ? '99+'
+                            : notificationCount.toString(),
                         style: GoogleFonts.lato(
                           color: Colors.white,
-                          fontSize: 10,
+                          fontSize: 9,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
@@ -249,8 +472,7 @@ final List<SushiItem> sushiItems = [
     name: 'Salmon Roll',
     price: 12.99,
     rating: 4.8,
-    image:
-        'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=400&h=300&fit=crop',
+    image: 'images/sushi-roll.png',
     description:
         'Fresh Atlantic salmon wrapped in perfectly seasoned sushi rice and nori seaweed. Our signature salmon roll features premium grade salmon, cucumber, and avocado.',
     category: 'Sushi',
@@ -261,8 +483,7 @@ final List<SushiItem> sushiItems = [
     name: 'Dragon Roll',
     price: 18.99,
     rating: 4.9,
-    image:
-        'https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=400&h=300&fit=crop',
+    image: 'images/sushi.png',
     description:
         'A spectacular roll topped with sliced avocado and eel, drizzled with our special dragon sauce. Contains tempura shrimp and cucumber inside.',
     category: 'Special',
@@ -279,8 +500,7 @@ final List<SushiItem> sushiItems = [
     name: 'Tuna Sashimi',
     price: 15.99,
     rating: 4.7,
-    image:
-        'https://images.unsplash.com/photo-1563612116625-3012372fccce?w=400&h=300&fit=crop',
+    image: 'images/closeup-shot-sushi-roll-black-stone-plate.jpg',
     description:
         'Premium grade bluefin tuna, expertly sliced and served fresh. Each piece melts in your mouth with its rich, buttery texture.',
     category: 'Sashimi',
@@ -291,8 +511,7 @@ final List<SushiItem> sushiItems = [
     name: 'California Roll',
     price: 10.99,
     rating: 4.6,
-    image:
-        'https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?w=400&h=300&fit=crop',
+    image: 'images/delicious-flying-sushi-presentation.jpg',
     description:
         'Classic California roll with fresh crab, avocado, and cucumber. Rolled inside-out with sesame seeds and served with wasabi and ginger.',
     category: 'Sushi',
@@ -309,8 +528,7 @@ final List<SushiItem> sushiItems = [
     name: 'Spicy Tuna Roll',
     price: 13.99,
     rating: 4.5,
-    image:
-        'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400&h=300&fit=crop',
+    image: 'images/pngwing.com.png',
     description:
         'Fresh tuna mixed with our signature spicy mayo, cucumber, and scallions. Topped with sesame seeds and spicy sauce.',
     category: 'Sushi',
@@ -327,8 +545,7 @@ final List<SushiItem> sushiItems = [
     name: 'Rainbow Roll',
     price: 16.99,
     rating: 4.8,
-    image:
-        'https://images.unsplash.com/photo-1582450871875-5937736c2d80?w=400&h=300&fit=crop',
+    image: 'images/maki-sushi-isolated-white.jpg',
     description:
         'Beautiful rainbow of fresh fish including tuna, salmon, yellowtail, and avocado over a California roll base.',
     category: 'Special',
@@ -387,44 +604,36 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFFFAFAFA), Color(0xFFF5F5F5)],
-        ),
-      ),
-      child: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header Section
-              _buildHeader(),
-              const SizedBox(height: 30),
+      color: const Color(0xFFFAFAFA),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header Section
+            _buildHeader(),
+            const SizedBox(height: 30),
 
-              // Search Bar
-              _buildSearchBar(),
-              const SizedBox(height: 30),
+            // Search Bar
+            _buildSearchBar(),
+            const SizedBox(height: 30),
 
-              // Promotional Banner
-              _buildPromotionalBanner(),
-              const SizedBox(height: 30),
+            // Promotional Banner
+            _buildPromotionalBanner(),
+            const SizedBox(height: 30),
 
-              // Categories Section
-              _buildCategoriesSection(),
-              const SizedBox(height: 30),
+            // Categories Section
+            _buildCategoriesSection(),
+            const SizedBox(height: 30),
 
-              // Popular Section Header
-              _buildSectionHeader(),
-              const SizedBox(height: 15),
+            // Popular Section Header
+            _buildSectionHeader(),
+            const SizedBox(height: 15),
 
-              // Food Items Grid
-              _buildFoodGrid(),
-              const SizedBox(height: 120), // Space for bottom nav
-            ],
-          ),
+            // Food Items Grid
+            _buildFoodGrid(),
+            const SizedBox(height: 100), // Space for bottom nav
+          ],
         ),
       ),
     );
@@ -432,19 +641,16 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
 
   Widget _buildHeader() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFFD5860F), Color(0xFFE89C2C)],
-        ),
-        borderRadius: BorderRadius.circular(24),
+        color: const Color(0xFFD5860F),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFD5860F).withOpacity(0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+            color: const Color(0xFFD5860F).withOpacity(0.2),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -462,10 +668,10 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Hello, Sushi Lover!',
+                      'home.hello_user'.tr(),
                       style: GoogleFonts.lato(
                         color: Colors.white,
-                        fontSize: isSmallScreen ? 22 : 28,
+                        fontSize: isSmallScreen ? 20 : 24,
                         fontWeight: FontWeight.bold,
                       ),
                       maxLines: 1,
@@ -473,10 +679,10 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      'What would you like to eat today?',
+                      'home.what_eat_today'.tr(),
                       style: GoogleFonts.lato(
                         color: Colors.white.withOpacity(0.9),
-                        fontSize: isSmallScreen ? 14 : 16,
+                        fontSize: isSmallScreen ? 12 : 14,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -492,10 +698,10 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          'Downtown, 25°C',
+                          'home.location_temp'.tr(),
                           style: GoogleFonts.lato(
                             color: Colors.white.withOpacity(0.8),
-                            fontSize: 12,
+                            fontSize: 10,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -505,51 +711,56 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
               Expanded(
                 flex: 2,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     // Delivery time indicator
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.3),
+                    Flexible(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.3),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.access_time_rounded,
+                              color: Colors.white,
+                              size: 12,
+                            ),
+                            const SizedBox(width: 3),
+                            Flexible(
+                              child: Text(
+                                'home.delivery_time'.tr(),
+                                style: GoogleFonts.lato(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.access_time_rounded,
-                            color: Colors.white,
-                            size: 14,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '25 min',
-                            style: GoogleFonts.lato(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 6),
                     Container(
-                      padding: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: Colors.white.withOpacity(0.3),
                         ),
@@ -557,7 +768,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                       child: Icon(
                         Icons.notifications_none_rounded,
                         color: Colors.white,
-                        size: isSmallScreen ? 20 : 22,
+                        size: isSmallScreen ? 18 : 20,
                       ),
                     ),
                   ],
@@ -575,12 +786,12 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(25),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -592,7 +803,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
           });
         },
         decoration: InputDecoration(
-          hintText: 'Search for sushi, rolls, etc...',
+          hintText: 'home.search_placeholder'.tr(),
           hintStyle: GoogleFonts.lato(color: Colors.grey[500], fontSize: 16),
           prefixIcon: Icon(
             Icons.search_rounded,
@@ -611,20 +822,13 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
       width: double.infinity,
       height: 160,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: [
-            Colors.white.withOpacity(0.95),
-            Colors.white.withOpacity(0.85),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(24),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -732,7 +936,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Categories',
+          'home.categories'.tr(),
           style: GoogleFonts.lato(
             color: Colors.black87,
             fontSize: 22,
@@ -769,7 +973,9 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          selectedCategory == 'All' ? 'Popular Today' : selectedCategory,
+          selectedCategory == 'All'
+              ? 'home.popular_today'.tr()
+              : selectedCategory,
           style: GoogleFonts.lato(
             color: Colors.black87,
             fontSize: 22,
@@ -781,7 +987,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
             // TODO: Navigate to See All Page
           },
           child: Text(
-            'See All',
+            'home.see_all'.tr(),
             style: GoogleFonts.lato(
               color: const Color(0xFFD5860F),
               fontSize: 16,
@@ -806,7 +1012,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
               Icon(Icons.search_off_rounded, size: 48, color: Colors.grey[400]),
               const SizedBox(height: 16),
               Text(
-                'No items found',
+                'home.no_items'.tr(),
                 style: GoogleFonts.lato(
                   color: Colors.grey[600],
                   fontSize: 18,
@@ -844,27 +1050,22 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 150),
         margin: const EdgeInsets.only(right: 16),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         decoration: BoxDecoration(
-          gradient: isSelected
-              ? const LinearGradient(
-                  colors: [Color(0xFFD5860F), Color(0xFFE89C2C)],
-                )
-              : null,
-          color: isSelected ? null : Colors.white,
-          borderRadius: BorderRadius.circular(24),
+          color: isSelected ? const Color(0xFFD5860F) : Colors.white,
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected ? Colors.transparent : Colors.grey[300]!,
           ),
           boxShadow: [
             BoxShadow(
               color: isSelected
-                  ? const Color(0xFFD5860F).withOpacity(0.3)
+                  ? const Color(0xFFD5860F).withOpacity(0.2)
                   : Colors.black.withOpacity(0.05),
-              blurRadius: isSelected ? 15 : 10,
-              offset: const Offset(0, 4),
+              blurRadius: isSelected ? 8 : 6,
+              offset: const Offset(0, 2),
             ),
           ],
         ),
@@ -919,12 +1120,12 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -937,19 +1138,21 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24),
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
                   ),
                   image: DecorationImage(
-                    image: NetworkImage(item.image),
+                    image: item.image.startsWith('http')
+                        ? NetworkImage(item.image)
+                        : AssetImage(item.image) as ImageProvider,
                     fit: BoxFit.cover,
                   ),
                 ),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(24),
-                      topRight: Radius.circular(24),
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
                     ),
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
@@ -1296,7 +1499,7 @@ class _SushiDetailPageState extends State<SushiDetailPage>
 
                       // Description
                       Text(
-                        'Description',
+                        'home.description'.tr(),
                         style: GoogleFonts.lato(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -1317,7 +1520,7 @@ class _SushiDetailPageState extends State<SushiDetailPage>
 
                       // Ingredients
                       Text(
-                        'Ingredients',
+                        'home.ingredients'.tr(),
                         style: GoogleFonts.lato(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,

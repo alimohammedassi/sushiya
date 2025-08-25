@@ -1,0 +1,80 @@
+{
+  "login": {
+    "welcome_back": "Welcome Back!",
+    "sign_in_continue": "Sign in to continue your sushi journey",
+    "email": "Email",
+    "password": "Password",
+    "forgot_password": "Forgot Password?",
+    "login_button": "LOGIN",
+    "or": "OR",
+    "create_account": "CREATE NEW ACCOUNT",
+    "enter_email": "Please enter your email",
+    "valid_email": "Please enter a valid email",
+    "enter_password": "Please enter your password",
+    "password_length": "Password must be at least 6 characters",
+    "login_successful": "Login Successful!"
+  },
+  "signup": {
+    "join_sushiaya": "Join Sushiaya!",
+    "create_account_start": "Create your account to start ordering",
+    "full_name": "Full Name",
+    "email": "Email",
+    "phone": "Phone Number",
+    "password": "Password",
+    "confirm_password": "Confirm Password",
+    "terms_conditions": "I accept the Terms & Conditions and Privacy Policy",
+    "create_account": "CREATE ACCOUNT",
+    "already_account": "Already have an account? ",
+    "login": "Login",
+    "enter_name": "Please enter your full name",
+    "enter_email": "Please enter your email",
+    "valid_email": "Please enter a valid email",
+    "enter_phone": "Please enter your phone number",
+    "enter_password": "Please enter your password",
+    "password_length": "Password must be at least 6 characters",
+    "confirm_password_text": "Please confirm your password",
+    "passwords_not_match": "Passwords do not match",
+    "accept_terms": "Please accept the terms and conditions",
+    "account_created": "Account Created Successfully!"
+  },
+  "home": {
+    "hello_user": "Hello, Sushi Lover!",
+    "what_eat_today": "What would you like to eat today?",
+    "location_temp": "Downtown, 25°C",
+    "delivery_time": "25 min",
+    "search_placeholder": "Search for sushi, rolls, etc...",
+    "special_offer": "🎉 Special Offer",
+    "discount": "30% OFF",
+    "first_order": "On your first order",
+    "categories": "Categories",
+    "all": "All",
+    "sushi": "Sushi",
+    "special": "Special",
+    "sashimi": "Sashimi",
+    "popular_today": "Popular Today",
+    "see_all": "See All",
+    "no_items": "No items found",
+    "description": "Description",
+    "ingredients": "Ingredients",
+    "profile_placeholder": "Profile Page - To be implemented"
+  },
+  "intro": {
+    "app_title": "SUSHIAYA",
+    "subtitle": "THE BEST JAPANESE FOOD EVER !",
+    "get_started": "GET STARTED",
+    "have_account": "I ALREADY HAVE AN ACCOUNT"
+  },
+  "common": {
+    "add_to_cart": "Add to Cart",
+    "quantity": "Quantity",
+    "total": "Total"
+  },
+  
+  "intro1": {
+    "app_title": "SUSHIAYA",
+    "subtitle": "THE BEST JAPANESE FOOD EVER!",
+    "get_started": "GET STARTED",
+    "have_account": "I ALREADY HAVE AN ACCOUNT"
+  }
+
+}
