@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sushiaya/screens/button.dart';
-import 'package:sushiaya/screens/home.dart';
+import 'package:sushiaya/services/firebase_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -49,30 +49,44 @@ class _SignUpScreenState extends State<SignUpScreen> {
         _isLoading = true;
       });
 
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
-
-      setState(() {
-        _isLoading = false;
-      });
-
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('signup.account_created'.tr()),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 1),
-        ),
+      final credential = await FirebaseService.createUserWithEmailAndPassword(
+        _emailController.text.trim(),
+        _passwordController.text,
       );
 
-      // Navigate to home screen and remove all previous routes
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
-        ), // Replace with your home screen class name
-        (route) => false, // This removes all previous routes from the stack
-      );
+      // Update user profile with name if account creation was successful
+      if (credential != null && credential.user != null) {
+        try {
+          await credential.user!.updateDisplayName(_nameController.text.trim());
+        } catch (e) {
+          print('Error updating display name: $e');
+        }
+      }
+
+      // Check if widget is still mounted before calling setState
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        if (credential != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('signup.account_created'.tr()),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 1),
+            ),
+          );
+          // AuthGate will handle navigation automatically
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('signup.failed'.tr()),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
     }
   }
 

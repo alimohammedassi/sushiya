@@ -75,6 +75,23 @@
     "subtitle": "THE BEST JAPANESE FOOD EVER!",
     "get_started": "GET STARTED",
     "have_account": "I ALREADY HAVE AN ACCOUNT"
+  },
+  "profile": {
+    "title": "Profile",
+    "no_name": "No Name",
+    "no_email": "No Email",
+    "verified": "Verified Account",
+    "edit_profile": "Edit Profile",
+    "edit_profile_desc": "Update your personal information",
+    "settings": "Account Settings",
+    "settings_desc": "Manage your account preferences",
+    "help_support": "Help & Support",
+    "help_support_desc": "Get help and contact support",
+    "sign_out": "Sign Out",
+    "sign_out_desc": "Sign out of your account",
+    "app_version": "App Version %s",
+    "edit_coming_soon": "Edit Profile feature coming soon!",
+    "settings_coming_soon": "Settings feature coming soon!",
+    "help_coming_soon": "Help & Support feature coming soon!"
   }
-
 }

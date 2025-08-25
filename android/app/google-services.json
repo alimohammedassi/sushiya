@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "435970170583",
+    "project_id": "sushiaya-72530",
+    "storage_bucket": "sushiaya-72530.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435970170583:android:2ea8f68ec7aa04eea51a92",
+        "android_client_info": {
+          "package_name": "com.example.sushiaya"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAiifwgCLu-UB6qfeA96rUjhNzST34-qFU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

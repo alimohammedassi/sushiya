@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sushiaya/screens/button.dart';
-import 'package:sushiaya/screens/login.dart';
+import 'package:sushiaya/auth/auth_gate.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class intro1 extends StatefulWidget {
@@ -146,10 +146,10 @@ class _intro1State extends State<intro1> {
               height: 60,
               borderRadius: 20,
               onPressed: () {
-                // Navigate to login screen
-                Navigator.push(
+                // Navigate to AuthGate (which will show login if not authenticated, or home if authenticated)
+                Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  MaterialPageRoute(builder: (context) => const AuthGate()),
                 );
               },
             ),
@@ -170,10 +170,10 @@ class _intro1State extends State<intro1> {
                 letterSpacing: 0.5,
               ),
               onPressed: () {
-                // Navigate directly to login or show login dialog
-                Navigator.push(
+                // Navigate to AuthGate (which will show login if not authenticated, or home if authenticated)
+                Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  MaterialPageRoute(builder: (context) => const AuthGate()),
                 );
               },
             ),

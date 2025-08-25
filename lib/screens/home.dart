@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'cartPro.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:sushiaya/screens/profile_screen.dart';
 
 enum SelectedTab { home, cart, profile }
 
@@ -50,22 +51,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       case SelectedTab.cart:
         return CartScreen();
       case SelectedTab.profile:
-        // TODO: Navigate to Profile Page
-        return Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xFFD5860F), Color(0xFFB46E0A)],
-            ),
-          ),
-          child: const Center(
-            child: Text(
-              'Profile Page - To be implemented',
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            ),
-          ),
-        );
+        return const ProfileScreen();
     }
   }
 
@@ -87,40 +73,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       title: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.15),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
-        ),
+
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 28,
-              height: 28,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.25),
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: const Icon(
-                Icons.restaurant_menu,
-                color: Colors.white,
-                size: 16,
-              ),
-            ),
             const SizedBox(width: 8),
             Text(
-              'Sushiaya',
-              style: GoogleFonts.lato(
+              'SUSHIAYA',
+              style: GoogleFonts.alegreyaSc(
                 color: Colors.white,
-                fontSize: 18,
+                fontSize: 25,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.5,
                 shadows: [
@@ -166,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   child: const Icon(
                     Icons.notifications_none_rounded,
                     color: Colors.white,
-                    size: 20,
+                    size: 25,
                   ),
                 ),
               ),
@@ -188,39 +150,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ),
       ],
-      leading: Container(
-        margin: const EdgeInsets.only(left: 12),
-        child: IconButton(
-          onPressed: () {
-            // TODO: Open menu or profile
-            _showMenuSnackBar();
-          },
-          icon: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.3),
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: const Icon(
-              Icons.menu_rounded,
-              color: Colors.white,
-              size: 20,
-            ),
-          ),
-        ),
-      ),
+
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
         child: Container(
