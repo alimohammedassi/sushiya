@@ -1,8 +1,7 @@
-// ignore_for_file: use_super_parameters
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+
 import 'cartPro.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:sushiaya/screens/profile_screen.dart';
@@ -70,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       backgroundColor: const Color(0xFFD5860F),
       elevation: 0,
       centerTitle: true,
+
       title: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             const SizedBox(width: 8),
             Text(
               'SUSHIAYA',
-              style: GoogleFonts.alegreyaSc(
+              style: GoogleFonts.aclonica(
                 color: Colors.white,
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
@@ -402,7 +402,7 @@ final List<SushiItem> sushiItems = [
     name: 'Salmon Roll',
     price: 12.99,
     rating: 4.8,
-    image: 'images/sushi-roll.png',
+    image: 'images/closeup-shot-sushi-roll-black-stone-plate.jpg',
     description:
         'Fresh Atlantic salmon wrapped in perfectly seasoned sushi rice and nori seaweed. Our signature salmon roll features premium grade salmon, cucumber, and avocado.',
     category: 'Sushi',
@@ -413,7 +413,7 @@ final List<SushiItem> sushiItems = [
     name: 'Dragon Roll',
     price: 18.99,
     rating: 4.9,
-    image: 'images/sushi.png',
+    image: 'images/Dragon-Roll-0286-I-500x375.jpg',
     description:
         'A spectacular roll topped with sliced avocado and eel, drizzled with our special dragon sauce. Contains tempura shrimp and cucumber inside.',
     category: 'Special',
@@ -430,7 +430,7 @@ final List<SushiItem> sushiItems = [
     name: 'Tuna Sashimi',
     price: 15.99,
     rating: 4.7,
-    image: 'images/closeup-shot-sushi-roll-black-stone-plate.jpg',
+    image: 'images/tuna.jpg',
     description:
         'Premium grade bluefin tuna, expertly sliced and served fresh. Each piece melts in your mouth with its rich, buttery texture.',
     category: 'Sashimi',
@@ -441,7 +441,7 @@ final List<SushiItem> sushiItems = [
     name: 'California Roll',
     price: 10.99,
     rating: 4.6,
-    image: 'images/delicious-flying-sushi-presentation.jpg',
+    image: 'images/tobiko-roll-1200.jpg',
     description:
         'Classic California roll with fresh crab, avocado, and cucumber. Rolled inside-out with sesame seeds and served with wasabi and ginger.',
     category: 'Sushi',
@@ -458,7 +458,7 @@ final List<SushiItem> sushiItems = [
     name: 'Spicy Tuna Roll',
     price: 13.99,
     rating: 4.5,
-    image: 'images/pngwing.com.png',
+    image: 'images/vegan-spicy-tuna-roll-1.jpg',
     description:
         'Fresh tuna mixed with our signature spicy mayo, cucumber, and scallions. Topped with sesame seeds and spicy sauce.',
     category: 'Sushi',
@@ -475,7 +475,7 @@ final List<SushiItem> sushiItems = [
     name: 'Rainbow Roll',
     price: 16.99,
     rating: 4.8,
-    image: 'images/maki-sushi-isolated-white.jpg',
+    image: 'images/rainbow-roll-gog-4.jpg',
     description:
         'Beautiful rainbow of fresh fish including tuna, salmon, yellowtail, and avocado over a California roll base.',
     category: 'Special',
@@ -541,8 +541,8 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header Section
-            _buildHeader(),
-            const SizedBox(height: 30),
+            // _buildHeader(),
+            // const SizedBox(height: 30),
 
             // Search Bar
             _buildSearchBar(),
@@ -569,159 +569,35 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     );
   }
 
-  Widget _buildHeader() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFD5860F),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFFD5860F).withOpacity(0.2),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final isSmallScreen = constraints.maxWidth < 400;
-
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 3,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'home.hello_user'.tr(),
-                      style: GoogleFonts.lato(
-                        color: Colors.white,
-                        fontSize: isSmallScreen ? 20 : 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      'home.what_eat_today'.tr(),
-                      style: GoogleFonts.lato(
-                        color: Colors.white.withOpacity(0.9),
-                        fontSize: isSmallScreen ? 12 : 14,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 10),
-                    // Weather and location info
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.location_on_rounded,
-                          color: Colors.white.withOpacity(0.8),
-                          size: 14,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'home.location_temp'.tr(),
-                          style: GoogleFonts.lato(
-                            color: Colors.white.withOpacity(0.8),
-                            fontSize: 10,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                flex: 2,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    // Delivery time indicator
-                    Flexible(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.3),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.access_time_rounded,
-                              color: Colors.white,
-                              size: 12,
-                            ),
-                            const SizedBox(width: 3),
-                            Flexible(
-                              child: Text(
-                                'home.delivery_time'.tr(),
-                                style: GoogleFonts.lato(
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.3),
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.notifications_none_rounded,
-                        color: Colors.white,
-                        size: isSmallScreen ? 18 : 20,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
+  // Widget _buildHeader() {
+  //   return Container(
+  //     width: double.infinity,
+  //     padding: const EdgeInsets.all(16),
+  //     decoration: BoxDecoration(
+  //       color: const Color(0xFFD5860F),
+  //       borderRadius: BorderRadius.circular(20),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: const Color(0xFFD5860F).withOpacity(0.2),
+  //           blurRadius: 12,
+  //           offset: const Offset(0, 4),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildSearchBar() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color.fromARGB(197, 255, 255, 255),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: Colors.black.withOpacity(0.5),
+            blurRadius: 7,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
@@ -734,11 +610,14 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
         },
         decoration: InputDecoration(
           hintText: 'home.search_placeholder'.tr(),
-          hintStyle: GoogleFonts.lato(color: Colors.grey[500], fontSize: 16),
+          hintStyle: GoogleFonts.lato(
+            color: const Color.fromARGB(255, 53, 51, 51),
+            fontSize: 16,
+          ),
           prefixIcon: Icon(
             Icons.search_rounded,
             color: Colors.grey[500],
-            size: 22,
+            size: 27,
           ),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(vertical: 16),
@@ -773,7 +652,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: const Color(0xFFD5860F).withOpacity(0.1),
+                color: const Color(0xFFD5860F),
                 shape: BoxShape.circle,
               ),
             ),
@@ -785,7 +664,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: const Color(0xFFE89C2C).withOpacity(0.15),
+                color: const Color(0xFFE89C2C),
                 shape: BoxShape.circle,
               ),
             ),
@@ -841,18 +720,8 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                     ],
                   ),
                 ),
+
                 // Sushi emoji or icon
-                Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFD5860F).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Center(
-                    child: Text('🍣', style: TextStyle(fontSize: 40)),
-                  ),
-                ),
               ],
             ),
           ),
@@ -1154,6 +1023,13 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                               listen: false,
                             ).addItem(item);
                           },
+                          // onLongPress: () {
+                          //   NotificationsScreen.showNotification(
+                          //     id: item.id,
+                          //     title: 'Added to cart! 🍣',
+                          //     body: '${item.name} is waiting for you in the cart.',
+                          //   );
+                          // },
                           child: Container(
                             width: 32,
                             height: 32,
@@ -1291,7 +1167,9 @@ class _SushiDetailPageState extends State<SushiDetailPage>
                 child: Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: NetworkImage(widget.sushiItem.image),
+                      image: widget.sushiItem.image.startsWith('http')
+                          ? NetworkImage(widget.sushiItem.image)
+                          : AssetImage(widget.sushiItem.image) as ImageProvider,
                       fit: BoxFit.cover,
                     ),
                   ),

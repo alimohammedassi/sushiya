@@ -5,7 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:sushiaya/screens/intro1.dart';
 import 'firebase_options.dart';
 import 'package:sushiaya/screens/cartPro.dart';
-import 'package:sushiaya/auth/auth_gate.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,7 +47,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Sushiaya',
         theme: ThemeData(primarySwatch: Colors.orange),
-        home: const intro1(),
+        home: const IntroScreen(),
       ),
     );
   }
