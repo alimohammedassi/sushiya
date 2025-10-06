@@ -30,6 +30,14 @@ dependencies:
   shimmer: ^3.0.0
   cached_network_image: ^3.2.3 # Add this line
   firebase_storage: ^12.4.10
+  haptic_feedback: ^0.5.1+1
+  sqflite: ^2.3.0
+  path: ^1.8.3
+  cloud_firestore: ^5.6.12
+  path_provider: ^2.1.1
+  geocoding: ^2.2.1
+  
+ 
 
 dev_dependencies:
   flutter_test:
@@ -48,11 +56,11 @@ flutter_icons:
   ios: true
 
   # Main app icon (recommended: 1024x1024 PNG)
-  image_path: "images/logo.png"
+  image_path: "images/Black and Red Simple Sushi Logo.png"
 
   # Android Adaptive Icon Configuration
   adaptive_icon_background: "#d5860f"
-  adaptive_icon_foreground: "images/logo_foreground.png"
+  adaptive_icon_foreground: "images/Black and Red Simple Sushi Logo.png"
 
   # iOS specific settings
   ios_icon_padding: 0.1 # Adds slight padding for iOS (0.0 to 0.5)

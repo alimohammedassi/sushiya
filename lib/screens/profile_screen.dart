@@ -1,3 +1,6 @@
+
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -102,21 +105,22 @@ class _ProfileScreenState extends State<ProfileScreen>
                 position: _slideAnimation,
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                   child: Form(
                     key: _formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildProfileHeader(),
-                        const SizedBox(height: 30),
-                        _buildProfileForm(),
-                        const SizedBox(height: 30),
+                        const SizedBox(height: 32),
+                        _buildProfileSection('profile.personal_info'.tr(), _buildProfileForm()),
+                        const SizedBox(height: 28),
                         _buildActionButtons(),
-                        const SizedBox(height: 20),
-                        _buildMenuOptions(),
-                        const SizedBox(height: 30),
+                        const SizedBox(height: 28),
+                        _buildProfileSection('profile.menu'.tr(), _buildMenuOptions()),
+                        const SizedBox(height: 28),
                         _buildSignOutButton(),
+                        const SizedBox(height: 40), // Bottom padding for safe area
                       ],
                     ),
                   ),
@@ -146,6 +150,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         'profile.title'.tr(),
         style: GoogleFonts.lato(
           fontWeight: FontWeight.bold,
+          fontSize: 20,
           color: Colors.white,
         ),
       ),
@@ -158,6 +163,24 @@ class _ProfileScreenState extends State<ProfileScreen>
           },
           icon: const Icon(Icons.settings_outlined, color: Colors.white),
         ),
+      ],
+    );
+  }
+
+  Widget _buildProfileSection(String title, Widget child) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: GoogleFonts.lato(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: Colors.black87,
+          ),
+        ),
+        const SizedBox(height: 16),
+        child,
       ],
     );
   }
@@ -194,6 +217,7 @@ class _ProfileScreenState extends State<ProfileScreen>
       child: Column(
         children: [
           Stack(
+            alignment: Alignment.bottomRight,
             children: [
               Hero(
                 tag: 'profile_image',
@@ -202,18 +226,18 @@ class _ProfileScreenState extends State<ProfileScreen>
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
+                        color: Colors.black.withOpacity(0.12),
+                        blurRadius: 24,
+                        offset: const Offset(0, 6),
                       ),
                     ],
                   ),
                   child: CircleAvatar(
-                    radius: 60,
+                    radius: 64,
                     backgroundColor: Colors.grey[200],
                     backgroundImage: _getProfileImage(),
                     child: _getProfileImage() == null
-                        ? Icon(Icons.person, size: 60, color: Colors.grey[400])
+                        ? Icon(Icons.person, size: 64, color: Colors.grey[400])
                         : null,
                   ),
                 ),
@@ -221,7 +245,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               if (_isUploadingImage)
                 Positioned.fill(
                   child: CircleAvatar(
-                    radius: 60,
+                    radius: 64,
                     backgroundColor: Colors.black54,
                     child: const CircularProgressIndicator(
                       color: Colors.white,
@@ -230,46 +254,51 @@ class _ProfileScreenState extends State<ProfileScreen>
                   ),
                 ),
               Positioned(
-                bottom: 0,
-                right: 0,
+                bottom: 4,
+                right: 4,
                 child: GestureDetector(
                   onTap: _isUploadingImage ? null : _showImagePickerOptions,
                   child: Container(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 213, 134, 15),
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
+                          color: Colors.black.withOpacity(0.25),
+                          blurRadius: 10,
+                          offset: const Offset(0, 3),
                         ),
                       ],
                     ),
                     child: const Icon(
                       Icons.camera_alt,
                       color: Colors.white,
-                      size: 20,
+                      size: 18,
                     ),
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           Text(
             currentUser?.displayName ?? 'profile.no_name'.tr(),
             style: GoogleFonts.lato(
-              fontSize: 24,
+              fontSize: 22,
               fontWeight: FontWeight.bold,
               color: Colors.black87,
             ),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 4),
           Text(
             currentUser?.email ?? '',
-            style: GoogleFonts.lato(fontSize: 16, color: Colors.grey[600]),
+            style: GoogleFonts.lato(
+              fontSize: 15,
+              color: Colors.grey[600],
+            ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
@@ -280,15 +309,6 @@ class _ProfileScreenState extends State<ProfileScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'profile',
-          style: GoogleFonts.lato(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-        ),
-        const SizedBox(height: 16),
         _buildTextField(
           controller: _nameController,
           label: 'profile.name'.tr(),
@@ -338,37 +358,41 @@ class _ProfileScreenState extends State<ProfileScreen>
         keyboardType: keyboardType,
         validator: validator,
         enabled: enabled,
-        style: GoogleFonts.lato(fontSize: 16),
+        style: GoogleFonts.lato(fontSize: 16, color: Colors.black87),
         decoration: InputDecoration(
           labelText: label,
+          labelStyle: GoogleFonts.lato(
+            color: Colors.grey[600],
+            fontWeight: FontWeight.w500,
+          ),
           prefixIcon: Icon(
             icon,
-            color: const Color.fromARGB(255, 213, 134, 15),
+            color: enabled
+                ? const Color.fromARGB(255, 213, 134, 15)
+                : Colors.grey[400],
           ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
             borderSide: BorderSide(color: Colors.grey[300]!),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
             borderSide: BorderSide(color: Colors.grey[300]!),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
             borderSide: const BorderSide(
               color: Color.fromARGB(255, 213, 134, 15),
               width: 2,
             ),
           ),
           disabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
             borderSide: BorderSide(color: Colors.grey[200]!),
           ),
           filled: true,
           fillColor: enabled ? Colors.white : Colors.grey[50],
-          labelStyle: GoogleFonts.lato(
-            color: enabled ? Colors.black87 : Colors.grey[500],
-          ),
+          contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         ),
       ),
     );
@@ -377,16 +401,14 @@ class _ProfileScreenState extends State<ProfileScreen>
   Widget _buildLocationField() {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.grey[200]!),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
             offset: const Offset(0, 2),
           ),
         ],
@@ -394,40 +416,41 @@ class _ProfileScreenState extends State<ProfileScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(
-                    255,
-                    213,
-                    134,
-                    15,
-                  ).withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 213, 134, 15).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(
+                    Icons.location_on,
+                    color: Color.fromARGB(255, 213, 134, 15),
+                    size: 20,
+                  ),
                 ),
-                child: const Icon(
-                  Icons.location_on,
-                  color: Color.fromARGB(255, 213, 134, 15),
-                  size: 20,
+                const SizedBox(width: 12),
+                Text(
+                  'profile.location'.tr(),
+                  style: GoogleFonts.lato(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                'profile.location'.tr(),
-                style: GoogleFonts.lato(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                ),
-              ),
-              const Spacer(),
-              _buildLocationActions(),
-            ],
+                const Spacer(),
+                _buildLocationActions(),
+              ],
+            ),
           ),
-          const SizedBox(height: 16),
-          _buildLocationContent(),
+          const Divider(height: 1, color: Colors.grey),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: _buildLocationContent(),
+          ),
         ],
       ),
     );
@@ -496,7 +519,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         onTap();
       },
       child: Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           color: color.withOpacity(0.1),
           borderRadius: BorderRadius.circular(8),
@@ -512,38 +535,17 @@ class _ProfileScreenState extends State<ProfileScreen>
         controller: _locationController,
         decoration: InputDecoration(
           hintText: 'profile.enter_location'.tr(),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey[300]!),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(
-              color: Color.fromARGB(255, 213, 134, 15),
-              width: 2,
-            ),
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
+          hintStyle: GoogleFonts.lato(color: Colors.grey[500]),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.zero,
         ),
-        style: GoogleFonts.lato(fontSize: 14, color: Colors.black87),
+        style: GoogleFonts.lato(fontSize: 15, color: Colors.black87),
         autofocus: true,
       );
     } else if (userLocation != null && userLocation!.isNotEmpty) {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.grey[50],
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey[200]!),
-        ),
-        child: Text(
-          userLocation!,
-          style: GoogleFonts.lato(fontSize: 14, color: Colors.black87),
-        ),
+      return Text(
+        userLocation!,
+        style: GoogleFonts.lato(fontSize: 15, color: Colors.black87),
       );
     } else {
       return GestureDetector(
@@ -551,31 +553,19 @@ class _ProfileScreenState extends State<ProfileScreen>
           HapticFeedback.lightImpact();
           setState(() => _isEditingLocation = true);
         },
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.grey[50],
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.grey[300]!,
-              style: BorderStyle.solid,
-            ),
-          ),
-          child: Row(
-            children: [
-              Icon(Icons.add, color: Colors.grey[600], size: 20),
-              const SizedBox(width: 8),
-              Text(
-                'profile.tap_add_location'.tr(),
-                style: GoogleFonts.lato(
-                  fontSize: 14,
-                  color: Colors.grey[600],
-                  fontStyle: FontStyle.italic,
-                ),
+        child: Row(
+          children: [
+            Icon(Icons.add, color: Colors.grey[500], size: 18),
+            const SizedBox(width: 8),
+            Text(
+              'profile.tap_add_location'.tr(),
+              style: GoogleFonts.lato(
+                fontSize: 15,
+                color: Colors.grey[500],
+                fontStyle: FontStyle.italic,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     }
@@ -587,31 +577,38 @@ class _ProfileScreenState extends State<ProfileScreen>
         Expanded(
           child: ElevatedButton.icon(
             onPressed: _isEditing ? _updateProfile : _enableEditing,
-            icon: Icon(_isEditing ? Icons.save : Icons.edit),
-            label: Text(_isEditing ? 'profile.save'.tr() : 'profile.edit'.tr()),
+            icon: Icon(_isEditing ? Icons.save : Icons.edit, size: 20),
+            label: Text(
+              _isEditing ? 'profile.save'.tr() : 'profile.edit'.tr(),
+              style: GoogleFonts.lato(fontWeight: FontWeight.w600),
+            ),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color.fromARGB(255, 213, 134, 15),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(14),
               ),
-              elevation: 2,
+              elevation: 3,
+              shadowColor: const Color.fromARGB(60, 213, 134, 15),
             ),
           ),
         ),
         if (_isEditing) ...[
-          const SizedBox(width: 16),
+          const SizedBox(width: 12),
           Expanded(
             child: OutlinedButton.icon(
               onPressed: _cancelEditing,
-              icon: const Icon(Icons.cancel),
-              label: Text('profile.cancel'.tr()),
+              icon: const Icon(Icons.cancel, size: 20),
+              label: Text(
+                'profile.cancel'.tr(),
+                style: GoogleFonts.lato(fontWeight: FontWeight.w600),
+              ),
               style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.grey[600],
+                foregroundColor: Colors.grey[700],
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(14),
                 ),
                 side: BorderSide(color: Colors.grey[300]!),
               ),
@@ -624,17 +621,7 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   Widget _buildMenuOptions() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'profile.menu'.tr(),
-          style: GoogleFonts.lato(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-        ),
-        const SizedBox(height: 16),
         _buildMenuTile(
           icon: Icons.history,
           title: 'profile.order_history'.tr(),
@@ -675,41 +662,44 @@ class _ProfileScreenState extends State<ProfileScreen>
     required VoidCallback onTap,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 5,
-            offset: const Offset(0, 1),
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
-      child: ListTile(
-        leading: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 213, 134, 15).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
+      child: Material(
+        color: Colors.transparent,
+        child: ListTile(
+          leading: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 213, 134, 15).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: const Color.fromARGB(255, 213, 134, 15), size: 22),
           ),
-          child: Icon(icon, color: const Color.fromARGB(255, 213, 134, 15)),
-        ),
-        title: Text(
-          title,
-          style: GoogleFonts.lato(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Colors.black87,
+          title: Text(
+            title,
+            style: GoogleFonts.lato(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.black87,
+            ),
           ),
+          trailing: const Icon(Icons.chevron_right, color: Colors.grey, size: 24),
+          onTap: () {
+            HapticFeedback.lightImpact();
+            onTap();
+          },
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         ),
-        trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-        onTap: () {
-          HapticFeedback.lightImpact();
-          onTap();
-        },
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
@@ -719,14 +709,17 @@ class _ProfileScreenState extends State<ProfileScreen>
       width: double.infinity,
       child: ElevatedButton.icon(
         onPressed: _signOut,
-        icon: const Icon(Icons.logout),
-        label: Text('profile.sign_out'.tr()),
+        icon: const Icon(Icons.logout, size: 20),
+        label: Text(
+          'profile.sign_out'.tr(),
+          style: GoogleFonts.lato(fontWeight: FontWeight.w600),
+        ),
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.redAccent,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
           ),
           elevation: 2,
         ),
@@ -734,7 +727,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
-  // Helper Methods
+  // === Remaining Helper Methods (Unchanged Logic, Only Minor Formatting) ===
 
   ImageProvider? _getProfileImage() {
     if (_selectedImage != null) {
@@ -747,12 +740,10 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   Future<void> _loadUserData() async {
     setState(() => _isLoading = true);
-
     try {
       final prefs = await SharedPreferences.getInstance();
       final savedLocation = prefs.getString('user_location');
       final savedPhone = prefs.getString('user_phone');
-
       if (mounted) {
         setState(() {
           userLocation = savedLocation;
@@ -772,17 +763,14 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   Future<void> _saveLocation(String location) async {
     if (!mounted) return;
-
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('user_location', location);
-
       if (mounted) {
         setState(() {
           userLocation = location;
           _isEditingLocation = false;
         });
-
         _showSuccessSnackBar('Location saved successfully');
       }
     } catch (e) {
@@ -796,14 +784,12 @@ class _ProfileScreenState extends State<ProfileScreen>
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('user_location');
-
       if (mounted) {
         setState(() {
           userLocation = null;
           _locationController.clear();
           _isEditingLocation = false;
         });
-
         _showSuccessSnackBar('profile.location_deleted'.tr());
       }
     } catch (e) {
@@ -813,19 +799,14 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   void _showSuccessSnackBar(String message) {
     if (!mounted) return;
-
-    final messenger = ScaffoldMessenger.of(context);
-    messenger.showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.check_circle, color: Colors.white),
+            const Icon(Icons.check_circle, color: Colors.white, size: 20),
             const SizedBox(width: 12),
             Expanded(
-              child: Text(
-                message,
-                style: GoogleFonts.lato(color: Colors.white),
-              ),
+              child: Text(message, style: GoogleFonts.lato(color: Colors.white)),
             ),
           ],
         ),
@@ -839,8 +820,6 @@ class _ProfileScreenState extends State<ProfileScreen>
   }
 
   void _showImagePickerOptions() {
-    final context = this.context; // Capture context early
-
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -848,7 +827,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         padding: const EdgeInsets.all(20),
         decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -864,10 +843,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             const SizedBox(height: 20),
             Text(
               'Select Photo',
-              style: GoogleFonts.lato(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
             Row(
@@ -913,23 +889,16 @@ class _ProfileScreenState extends State<ProfileScreen>
         padding: const EdgeInsets.symmetric(vertical: 20),
         decoration: BoxDecoration(
           color: Colors.grey[50],
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(color: Colors.grey[200]!),
         ),
         child: Column(
           children: [
-            Icon(
-              icon,
-              size: 32,
-              color: const Color.fromARGB(255, 213, 134, 15),
-            ),
-            const SizedBox(height: 8),
+            Icon(icon, size: 32, color: const Color.fromARGB(255, 213, 134, 15)),
+            const SizedBox(height: 10),
             Text(
               label,
-              style: GoogleFonts.lato(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
+              style: GoogleFonts.lato(fontSize: 15, fontWeight: FontWeight.w500),
             ),
           ],
         ),
@@ -939,23 +908,19 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   Future<void> _pickImage(ImageSource source) async {
     if (!mounted) return;
-
     try {
-      final ImagePicker picker = ImagePicker();
+      final picker = ImagePicker();
       final XFile? image = await picker.pickImage(
         source: source,
         maxWidth: 1024,
         maxHeight: 1024,
         imageQuality: 80,
       );
-
       if (image != null && mounted) {
         setState(() {
           _selectedImage = File(image.path);
           _isUploadingImage = true;
         });
-
-        // Upload to Firebase Storage
         await _uploadProfileImage();
       }
     } catch (e) {
@@ -967,25 +932,20 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   Future<void> _uploadProfileImage() async {
     if (_selectedImage == null || !mounted) return;
-
     try {
       final storageRef = FirebaseStorage.instance
           .ref()
           .child('profile_images')
           .child('${currentUser!.uid}.jpg');
-
       final uploadTask = storageRef.putFile(_selectedImage!);
       final snapshot = await uploadTask;
       final downloadUrl = await snapshot.ref.getDownloadURL();
-
       await currentUser!.updatePhotoURL(downloadUrl);
-
       if (mounted) {
         setState(() {
           _isUploadingImage = false;
           currentUser = FirebaseService.currentUser;
         });
-
         _showSuccessSnackBar('Profile image updated successfully');
       }
     } catch (e) {
@@ -1012,18 +972,12 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   Future<void> _updateProfile() async {
     if (!_formKey.currentState!.validate() || !mounted) return;
-
     HapticFeedback.lightImpact();
-
     setState(() => _isLoading = true);
-
     try {
-      // Update display name
       if (_nameController.text.trim() != currentUser?.displayName) {
         await currentUser?.updateDisplayName(_nameController.text.trim());
       }
-
-      // Save phone number
       if (_phoneController.text.trim() != userPhone) {
         final prefs = await SharedPreferences.getInstance();
         if (_phoneController.text.trim().isNotEmpty) {
@@ -1035,13 +989,11 @@ class _ProfileScreenState extends State<ProfileScreen>
             ? _phoneController.text.trim()
             : null;
       }
-
       if (mounted) {
         setState(() {
           _isEditing = false;
           currentUser = FirebaseService.currentUser;
         });
-
         _showSuccessSnackBar('Profile updated successfully');
       }
     } catch (e) {
@@ -1058,59 +1010,35 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   Future<void> _signOut() async {
     if (!mounted) return;
-
-    // Store context references before async operations
-    final currentContext = context;
-    final navigator = Navigator.of(currentContext);
-    final messenger = ScaffoldMessenger.of(currentContext);
-
     final result = await showDialog<bool>(
-      context: currentContext,
+      context: context,
       builder: (dialogContext) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(
-          'Sign Out',
-          style: GoogleFonts.lato(fontWeight: FontWeight.bold),
-        ),
-        content: Text(
-          'Are you sure you want to sign out?',
-          style: GoogleFonts.lato(),
-        ),
+        title: Text('Sign Out', style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
+        content: Text('Are you sure you want to sign out?', style: GoogleFonts.lato()),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
-            child: Text(
-              'Cancel',
-              style: GoogleFonts.lato(color: Colors.grey[600]),
-            ),
+            child: Text('Cancel', style: GoogleFonts.lato(color: Colors.grey[600])),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(dialogContext, true),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
+              backgroundColor: Colors.redAccent,
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
-            child: Text(
-              'Sign Out',
-              style: GoogleFonts.lato(fontWeight: FontWeight.bold),
-            ),
+            child: Text('Sign Out', style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
           ),
         ],
       ),
     );
-
     if (result != true || !mounted) return;
-
     setState(() => _isLoading = true);
-
     try {
       await FirebaseService.signOut();
-
       if (mounted) {
-        navigator.pushAndRemoveUntil(
+        Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const LoginScreen()),
           (route) => false,
         );
@@ -1126,19 +1054,14 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   void _showErrorSnackBar(String message) {
     if (!mounted) return;
-
-    final messenger = ScaffoldMessenger.of(context);
-    messenger.showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.error_outline, color: Colors.white),
+            const Icon(Icons.error_outline, color: Colors.white, size: 20),
             const SizedBox(width: 12),
             Expanded(
-              child: Text(
-                message,
-                style: GoogleFonts.lato(color: Colors.white),
-              ),
+              child: Text(message, style: GoogleFonts.lato(color: Colors.white)),
             ),
           ],
         ),
@@ -1153,46 +1076,29 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   void _showDeleteLocationDialog() {
     if (!mounted) return;
-
-    // Store context reference before async operations
-    final currentContext = context;
-    final messenger = ScaffoldMessenger.of(currentContext);
-
     showDialog(
-      context: currentContext,
+      context: context,
       builder: (dialogContext) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(
-          'Delete Location',
-          style: GoogleFonts.lato(fontWeight: FontWeight.bold),
-        ),
-        content: Text(
-          'Are you sure you want to delete your location?',
-          style: GoogleFonts.lato(),
-        ),
+        title: Text('Delete Location', style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
+        content: Text('Are you sure you want to delete your location?', style: GoogleFonts.lato()),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: Text(
-              'Cancel',
-              style: GoogleFonts.lato(color: Colors.grey[600]),
-            ),
+            child: Text('Cancel', style: GoogleFonts.lato(color: Colors.grey[600])),
           ),
           ElevatedButton(
             onPressed: () async {
               Navigator.pop(dialogContext);
-
               try {
                 final prefs = await SharedPreferences.getInstance();
                 await prefs.remove('user_location');
-
                 if (mounted) {
                   setState(() {
                     userLocation = null;
                     _locationController.clear();
                     _isEditingLocation = false;
                   });
-
                   _showSuccessSnackBar('Location deleted successfully');
                 }
               } catch (e) {
@@ -1202,16 +1108,11 @@ class _ProfileScreenState extends State<ProfileScreen>
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
+              backgroundColor: Colors.redAccent,
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
-            child: Text(
-              'Delete',
-              style: GoogleFonts.lato(fontWeight: FontWeight.bold),
-            ),
+            child: Text('Delete', style: GoogleFonts.lato(fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -1219,19 +1120,16 @@ class _ProfileScreenState extends State<ProfileScreen>
   }
 
   void _showLanguageSelector() {
-    // Get supported locales from EasyLocalization and capture context
     if (!mounted) return;
-    final currentContext = context;
-    final supportedLocales = currentContext.supportedLocales;
-
+    final supportedLocales = context.supportedLocales;
     showModalBottomSheet(
-      context: currentContext,
+      context: context,
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         padding: const EdgeInsets.all(20),
         decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -1247,13 +1145,9 @@ class _ProfileScreenState extends State<ProfileScreen>
             const SizedBox(height: 20),
             Text(
               'Select Language',
-              style: GoogleFonts.lato(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            // Dynamically build language tiles based on supported locales
             ...supportedLocales.map((locale) => _buildLanguageTile(locale)),
             const SizedBox(height: 20),
           ],
@@ -1264,51 +1158,19 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   Widget _buildLanguageTile(Locale locale) {
     if (!mounted) return const SizedBox.shrink();
-
     final isSelected = context.locale == locale;
-
-    // Define language info based on locale
-    String title;
-    String flag;
-
+    String title, flag;
     switch (locale.languageCode) {
-      case 'en':
-        title = 'English';
-        flag = '🇺🇸';
-        break;
-      case 'ar':
-        title = 'العربية';
-        flag = '🇪🇬';
-        break;
-      case 'es':
-        title = 'Español';
-        flag = '🇪🇸';
-        break;
-      case 'fr':
-        title = 'Français';
-        flag = '🇫🇷';
-        break;
-      case 'de':
-        title = 'Deutsch';
-        flag = '🇩🇪';
-        break;
-      case 'ja':
-        title = '日本語';
-        flag = '🇯🇵';
-        break;
-      case 'ko':
-        title = '한국어';
-        flag = '🇰🇷';
-        break;
-      case 'zh':
-        title = '中文';
-        flag = '🇨🇳';
-        break;
-      default:
-        title = locale.languageCode.toUpperCase();
-        flag = '🌐';
+      case 'en': title = 'English'; flag = '🇺🇸'; break;
+      case 'ar': title = 'العربية'; flag = '🇪🇬'; break;
+      case 'es': title = 'Español'; flag = '🇪🇸'; break;
+      case 'fr': title = 'Français'; flag = '🇫🇷'; break;
+      case 'de': title = 'Deutsch'; flag = '🇩🇪'; break;
+      case 'ja': title = '日本語'; flag = '🇯🇵'; break;
+      case 'ko': title = '한국어'; flag = '🇰🇷'; break;
+      case 'zh': title = '中文'; flag = '🇨🇳'; break;
+      default: title = locale.languageCode.toUpperCase(); flag = '🌐';
     }
-
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
@@ -1318,45 +1180,29 @@ class _ProfileScreenState extends State<ProfileScreen>
           style: GoogleFonts.lato(
             fontSize: 16,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            color: isSelected
-                ? const Color.fromARGB(255, 213, 134, 15)
-                : Colors.black87,
+            color: isSelected ? const Color.fromARGB(255, 213, 134, 15) : Colors.black87,
           ),
         ),
         trailing: isSelected
-            ? const Icon(
-                Icons.check_circle,
-                color: Color.fromARGB(255, 213, 134, 15),
-              )
+            ? const Icon(Icons.check_circle, color: Color.fromARGB(255, 213, 134, 15))
             : null,
         onTap: () async {
           if (!mounted) return;
-
           HapticFeedback.lightImpact();
-
-          // Store context before async operations
-          final currentContext = context;
-          final navigator = Navigator.of(currentContext);
-          final messenger = ScaffoldMessenger.of(currentContext);
-
-          navigator.pop();
-
+          Navigator.pop(context);
           try {
-            await currentContext.setLocale(locale);
+            await context.setLocale(locale);
             if (mounted) {
               _showSuccessSnackBar('Language changed successfully');
             }
           } catch (e) {
-            debugPrint('Error changing language: $e');
             if (mounted) {
               _showErrorSnackBar('Failed to change language');
             }
           }
         },
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        tileColor: isSelected
-            ? const Color.fromARGB(255, 213, 134, 15).withOpacity(0.1)
-            : Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        tileColor: isSelected ? const Color.fromARGB(255, 213, 134, 15).withOpacity(0.08) : null,
       ),
     );
   }

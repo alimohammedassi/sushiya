@@ -70,4 +70,34 @@ class FirebaseService {
       return null;
     }
   }
+
+  // Admin check
+  static bool isAdmin() {
+    final user = currentUser;
+    if (user == null) return false;
+
+    // Check for admin email
+    return user.email == 'admin@sushiaya.com' ||
+        user.email == 'aliabouali2005@gmail.com' ||
+        user.email?.contains('admin') == true ||
+        user.email?.contains('manager') == true;
+  }
+
+  // Create admin user if it doesn't exist
+  static Future<UserCredential?> createAdminUser() async {
+    try {
+      // Try to create the admin user
+      return await _auth.createUserWithEmailAndPassword(
+        email: 'aliabouali2005@gmail.com',
+        password: 'aliassi20',
+      );
+    } catch (e) {
+      print('Error creating admin user: $e');
+      // If user already exists, try to sign in
+      return await signInWithEmailAndPassword(
+        'aliabouali2005@gmail.com',
+        'aliassi20',
+      );
+    }
+  }
 }

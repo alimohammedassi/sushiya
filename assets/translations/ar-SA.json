@@ -35,39 +35,68 @@
     "confirm_password_text": "يرجى تأكيد كلمة المرور",
     "passwords_not_match": "كلمات المرور غير متطابقة",
     "accept_terms": "يرجى قبول الشروط والأحكام",
-    "account_created": "تم إنشاء الحساب بنجاح!"
+    "account_created": "تم إنشاء الحساب بنجاح!",
+    "failed": "فشل في تسجيل الدخول"
   },
+
   "home": {
-    "hello_user": "مرحباً، محب السوشي!",
-    "what_eat_today": "ماذا تود أن تأكل اليوم؟",
-    "location_temp": "وسط المدينة، 25 درجة مئوية",
-    "delivery_time": "25 دقيقة",
-    "search_placeholder": "ابحث عن السوشي، الرولز، إلخ...",
-    "special_offer": "🎉 عرض خاص",
-    "discount": "خصم 30%",
+    "title": "الرئيسية",
+    "hello_user": "جعان؟😣 جرب السوشي الفريش وهتدمن الطعم!",
+
+    "what_eat_today": "ماذا تريد أن تأكل اليوم؟",
+    "location_temp": "٢٥°C وسط المدينة",
+    "delivery_time": "٢٥ دقيقة",
+    "search_placeholder": "ابحث عن سوشي، رولز، إلخ...",
+    "special_offer": "عرض خاص",
+    "discount": "٣٠% خصم",
     "first_order": "على طلبك الأول",
     "categories": "الفئات",
     "all": "الكل",
     "sushi": "سوشي",
-    "special": "مميز",
+    "special": "خاص",
     "sashimi": "ساشيمي",
     "popular_today": "الأكثر طلباً اليوم",
     "see_all": "عرض الكل",
     "no_items": "لا توجد عناصر",
     "description": "الوصف",
     "ingredients": "المكونات",
-    "profile_placeholder": "صفحة الملف الشخصي - سيتم تطبيقها"
+    "profile_placeholder": "صفحة الملف الشخصي - قيد التطوير"
   },
+
   "intro": {
     "app_title": "سوشيايا",
     "subtitle": "أفضل طعام ياباني على الإطلاق !",
     "get_started": "ابدأ الآن",
     "have_account": "لدي حساب بالفعل"
   },
-  "common": {
-    "add_to_cart": "إضافة للسلة",
-    "quantity": "الكمية",
-    "total": "المجموع"
+  "cart": {
+    "title": "السلة"
+  },
+  "admin": {
+    "title": "الإدارة"
+  },
+  "profile": {
+    "title": "الملف الشخصي",
+    "personal_info": "المعلومات الشخصية",
+    "name": "الاسم",
+    "phone": "رقم الهاتف",
+    "location": "الموقع",
+    "tap_add_location": "اضغط لإضافة موقع",
+    "menu": "القائمة",
+    "language": "اللغة",
+    "edit": "تعديل",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "order_history": "تاريخ الطلبات",
+    "notifications": "الإشعارات",
+    "help_support": "المساعدة والدعم",
+    "sign_out": "تسجيل الخروج",
+    "no_name": "بدون اسم",
+    "name_required": "الاسم مطلوب",
+    "phone_invalid": "رقم الهاتف غير صحيح",
+    "enter_location": "أدخل موقعك",
+    "location_deleted": "تم حذف الموقع",
+    "location_delete_failed": "فشل في حذف الموقع"
   },
   "intro1": {
     "app_title": "سوشي أيا",

@@ -3,13 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sushiaya/screens/intro1.dart';
 import 'package:sushiaya/services/firebase_service.dart';
-import 'package:sushiaya/screens/button.dart';
-import 'package:provider/provider.dart';
-import 'package:sushiaya/screens/sign.dart';
-import 'package:sushiaya/screens/home.dart';
-import 'cartPro.dart';
+import 'package:sushiaya/screens/main_navigation.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -135,12 +130,7 @@ class _LoginScreenState extends State<LoginScreen>
           if (mounted) {
             Navigator.pushAndRemoveUntil(
               context,
-              _createSlideRoute(
-                ChangeNotifierProvider(
-                  create: (context) => CartProvider(),
-                  child: const HomeScreen(),
-                ),
-              ),
+              _createSlideRoute(const MainNavigationScreen()),
               (route) => false,
             );
           }
@@ -174,12 +164,7 @@ class _LoginScreenState extends State<LoginScreen>
 
         Navigator.pushAndRemoveUntil(
           context,
-          _createSlideRoute(
-            ChangeNotifierProvider(
-              create: (context) => CartProvider(),
-              child: const HomeScreen(),
-            ),
-          ),
+          _createSlideRoute(const MainNavigationScreen()),
           (route) => false,
         );
       } else {
@@ -339,9 +324,7 @@ class _LoginScreenState extends State<LoginScreen>
                   HapticFeedback.lightImpact();
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const IntroScreen(),
-                    ),
+                    MaterialPageRoute(builder: (context) => IntroScreen()),
                   );
                 },
                 child: const Padding(
@@ -746,30 +729,30 @@ class _LoginScreenState extends State<LoginScreen>
     return SizedBox(
       width: double.infinity,
       height: 56,
-      child: OutlinedButton(
-        onPressed: () {
-          HapticFeedback.lightImpact();
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const SignUpScreen()),
-          );
-        },
-        style: OutlinedButton.styleFrom(
-          foregroundColor: Colors.white,
-          side: BorderSide(color: Colors.white.withOpacity(0.7), width: 2),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-        ),
-        child: Text(
-          "login.create_account".tr(),
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.3,
-          ),
-        ),
-      ),
+      // child: OutlinedButton(
+      //   // onPressed: () {
+      //   //   HapticFeedback.lightImpact();
+      //   //   Navigator.push(
+      //   //     context,
+      //   //     MaterialPageRoute(builder: (context) => const SignUpScreen()),
+      //   //   );
+      //   // },
+      //   style: OutlinedButton.styleFrom(
+      //     foregroundColor: Colors.white,
+      //     side: BorderSide(color: Colors.white.withOpacity(0.7), width: 2),
+      //     shape: RoundedRectangleBorder(
+      //       borderRadius: BorderRadius.circular(16),
+      //     ),
+      //   ),
+      //   child: Text(
+      //     "login.create_account".tr(),
+      //     style: GoogleFonts.inter(
+      //       fontSize: 16,
+      //       fontWeight: FontWeight.w600,
+      //       letterSpacing: 0.3,
+      //     ),
+      //   ),
+      // ),
     );
   }
 }

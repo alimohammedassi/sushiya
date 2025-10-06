@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sushiaya/screens/button.dart';
 import 'package:sushiaya/auth/auth_gate.dart';
+import 'package:sushiaya/screens/admin_login.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'dart:ui'; // Needed for BackdropFilter
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({super.key});
@@ -68,110 +69,137 @@ class _IntroScreenState extends State<IntroScreen>
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final isLandscape = size.width > size.height;
-
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+          gradient: RadialGradient(
+            center: Alignment.topLeft,
+            radius: 1.2,
             colors: [
-              Color(0xFFFF8A00), // Modern orange
-              Color(0xFFD5860F), // Your original color
-              Color(0xFFB8720C), // Darker shade
+              Color(0xFFD5860F),
+              Color(0xFFF5B041), // Warmer secondary tone
             ],
-            stops: [0.0, 0.6, 1.0],
+            stops: [0.0, 1.0],
           ),
         ),
-        child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: isLandscape ? 40 : 24,
-              vertical: 16,
+        child: Stack(
+          children: [
+            _buildBackgroundParticles(),
+            SafeArea(
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 28.0,
+                    vertical: 24.0,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: _buildLanguageSelector(),
+                      ),
+                      const SizedBox(height: 56),
+                      _buildLogo(),
+                      const SizedBox(height: 56),
+                      _buildMainCard(),
+                    ],
+                  ),
+                ),
+              ),
             ),
-            child: isLandscape
-                ? _buildLandscapeLayout(context)
-                : _buildPortraitLayout(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBackgroundParticles() {
+    return Positioned.fill(
+      child: AnimatedBuilder(
+        animation: _fadeAnimation,
+        builder: (context, child) {
+          return Opacity(
+            opacity: _fadeAnimation.value * 0.5,
+            child: CustomPaint(
+              painter: ParticlesPainter(),
+              size: Size.infinite,
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildMainCard() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(28),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 12.0, sigmaY: 12.0),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 44),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.25),
+              width: 1.2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.12),
+                blurRadius: 36,
+                offset: const Offset(0, 12),
+              ),
+              BoxShadow(
+                color: const Color(0xFFD5860F).withOpacity(0.2),
+                blurRadius: 20,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              _buildTitle(),
+              const SizedBox(height: 22),
+              _buildSubtitle(),
+              const SizedBox(height: 44),
+              _buildButtons(),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildPortraitLayout(BuildContext context) {
-    return Column(
-      children: [
-        _buildLanguageSelector(),
-        const Spacer(flex: 2),
-        _buildLogo(),
-        const SizedBox(height: 32),
-        _buildTitle(),
-        const SizedBox(height: 16),
-        _buildSubtitle(),
-        const Spacer(flex: 3),
-        _buildButtons(),
-        const SizedBox(height: 32),
-      ],
-    );
-  }
-
-  Widget _buildLandscapeLayout(BuildContext context) {
-    return Column(
-      children: [
-        _buildLanguageSelector(),
-        Expanded(
-          child: Row(
-            children: [
-              Expanded(
-                flex: 1,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildLogo(),
-                    const SizedBox(height: 24),
-                    _buildTitle(),
-                    const SizedBox(height: 12),
-                    _buildSubtitle(),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 32),
-              Expanded(
-                flex: 1,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [_buildButtons()],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildLanguageSelector() {
-    return Align(
-      alignment: Alignment.topRight,
-      child: AnimatedBuilder(
-        animation: _fadeAnimation,
-        builder: (context, child) {
-          return Opacity(
+    return AnimatedBuilder(
+      animation: _fadeAnimation,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(0, -24 * (1 - _fadeAnimation.value)),
+          child: Opacity(
             opacity: _fadeAnimation.value,
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(30),
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white.withOpacity(0.25),
+                    Colors.white.withOpacity(0.15),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(28),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.3),
-                  width: 1.5,
+                  color: Colors.white.withOpacity(0.35),
+                  width: 1.2,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 10,
+                    color: Colors.white.withOpacity(0.2),
+                    blurRadius: 16,
                     offset: const Offset(0, 4),
                   ),
                 ],
@@ -179,11 +207,11 @@ class _IntroScreenState extends State<IntroScreen>
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(28),
                   onTap: () => _showLanguageBottomSheet(context),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
+                      horizontal: 22,
                       vertical: 12,
                     ),
                     child: Row(
@@ -191,24 +219,24 @@ class _IntroScreenState extends State<IntroScreen>
                       children: [
                         Text(
                           context.locale.languageCode == 'ar' ? '🇸🇦' : '🇺🇸',
-                          style: const TextStyle(fontSize: 18),
+                          style: const TextStyle(fontSize: 20),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 10),
                         Text(
                           context.locale.languageCode == 'ar'
                               ? 'العربية'
                               : 'English',
-                          style: GoogleFonts.inter(
+                          style: GoogleFonts.poppins(
                             color: Colors.white,
-                            fontSize: 14,
+                            fontSize: 15,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: 6),
                         Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          color: Colors.white.withOpacity(0.8),
-                          size: 20,
+                          Icons.keyboard_arrow_down,
+                          color: Colors.white.withOpacity(0.9),
+                          size: 22,
                         ),
                       ],
                     ),
@@ -216,9 +244,9 @@ class _IntroScreenState extends State<IntroScreen>
                 ),
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -230,18 +258,25 @@ class _IntroScreenState extends State<IntroScreen>
           scale: _scaleAnimation.value,
           child: Container(
             padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.15),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
-                ),
-              ],
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFFD5860F).withOpacity(0.4),
+                    blurRadius: 24,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Image.asset(
+                "images/new sushyaya logo3.png",
+                width: 320,
+                height: 220,
+                fit: BoxFit.contain,
+              ),
             ),
-            child: Image.asset("images/sushi-roll.png", width: 80, height: 80),
           ),
         );
       },
@@ -256,16 +291,22 @@ class _IntroScreenState extends State<IntroScreen>
           position: _slideAnimation,
           child: FadeTransition(
             opacity: _fadeAnimation,
-            child: Text(
-              "intro1.app_title".tr(),
-              style: GoogleFonts.inter(
-                color: Colors.white,
-                fontSize: 36,
-                fontWeight: FontWeight.w900,
-                height: 1.1,
-                letterSpacing: -0.5,
+            child: ShaderMask(
+              shaderCallback: (bounds) => const LinearGradient(
+                colors: [Colors.white, Color(0xFFFFF8E1)],
+                stops: [0.0, 1.0],
+              ).createShader(bounds),
+              child: Text(
+                "intro1.app_title".tr(),
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontSize: 38,
+                  fontWeight: FontWeight.w900,
+                  height: 1.05,
+                  letterSpacing: -0.5,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
             ),
           ),
         );
@@ -294,8 +335,8 @@ class _IntroScreenState extends State<IntroScreen>
             ),
             child: Text(
               "intro1.subtitle".tr(),
-              style: GoogleFonts.inter(
-                color: Colors.white.withOpacity(0.9),
+              style: GoogleFonts.poppins(
+                color: Colors.white.withOpacity(0.92),
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
                 height: 1.5,
@@ -330,8 +371,10 @@ class _IntroScreenState extends State<IntroScreen>
             child: Column(
               children: [
                 _buildPrimaryButton(),
-                const SizedBox(height: 16),
+                const SizedBox(height: 18),
                 _buildSecondaryButton(),
+                const SizedBox(height: 12),
+                _buildAdminButton(),
               ],
             ),
           ),
@@ -341,26 +384,41 @@ class _IntroScreenState extends State<IntroScreen>
   }
 
   Widget _buildPrimaryButton() {
-    return SizedBox(
+    return Container(
       width: double.infinity,
-      height: 56,
+      height: 62,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFF9C74F), Color(0xFFD5860F)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(32),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFD5860F).withOpacity(0.4),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
       child: ElevatedButton(
         onPressed: () => _navigateToAuthGate(),
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-          foregroundColor: const Color(0xFFD5860F),
-          elevation: 8,
-          shadowColor: Colors.black.withOpacity(0.3),
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.white,
+          elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(32),
           ),
+          padding: EdgeInsets.zero,
         ),
         child: Text(
           "intro1.get_started".tr(),
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.3,
+          style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.6,
           ),
         ),
       ),
@@ -368,29 +426,104 @@ class _IntroScreenState extends State<IntroScreen>
   }
 
   Widget _buildSecondaryButton() {
-    return SizedBox(
+    return Container(
       width: double.infinity,
-      height: 56,
-      child: OutlinedButton(
-        onPressed: () => _navigateToAuthGate(),
-        style: OutlinedButton.styleFrom(
-          foregroundColor: Colors.white,
-          side: BorderSide(color: Colors.white.withOpacity(0.7), width: 2),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28),
-          ),
+      height: 62,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(32),
+        gradient: LinearGradient(
+          colors: [
+            Colors.white.withOpacity(0.12),
+            Colors.white.withOpacity(0.06),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        child: Text(
-          "intro1.have_account".tr(),
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            letterSpacing: 0.3,
+        border: Border.all(color: Colors.white.withOpacity(0.35), width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(32),
+          onTap: () => _navigateToAuthGate(),
+          child: Container(
+            alignment: Alignment.center,
+            child: Text(
+              "intro1.have_account".tr(),
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.5,
+              ),
+            ),
           ),
         ),
       ),
     );
   }
+
+  Widget _buildAdminButton() {
+    return Container(
+      width: double.infinity,
+      height: 48,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        gradient: LinearGradient(
+          colors: [Colors.red.withOpacity(0.8), Colors.orange.withOpacity(0.8)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(24),
+          onTap: () => _navigateToAdminLogin(),
+          child: Container(
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.admin_panel_settings,
+                  color: Colors.white,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  "Admin Login",
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // === Remaining Methods (Unchanged Logic) ===
 
   void _navigateToAuthGate() {
     HapticFeedback.lightImpact();
@@ -422,52 +555,97 @@ class _IntroScreenState extends State<IntroScreen>
     );
   }
 
+  void _navigateToAdminLogin() {
+    HapticFeedback.lightImpact();
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const AdminLoginScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: SlideTransition(
+              position:
+                  Tween<Offset>(
+                    begin: const Offset(0, 0.1),
+                    end: Offset.zero,
+                  ).animate(
+                    CurvedAnimation(
+                      parent: animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ),
+              child: child,
+            ),
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 600),
+      ),
+    );
+  }
+
   void _showLanguageBottomSheet(BuildContext context) {
     HapticFeedback.selectionClick();
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
+      isScrollControlled: true,
       builder: (context) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color.fromARGB(255, 213, 134, 15),
+              Color.fromARGB(255, 245, 176, 65),
+            ],
+          ),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 24,
+              offset: const Offset(0, -12),
+            ),
+          ],
         ),
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 40,
-              height: 4,
+              width: 50,
+              height: 5,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(2),
+                color: Colors.white.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(3),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 32),
             Text(
               'Choose Language',
-              style: GoogleFonts.inter(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
+              style: GoogleFonts.poppins(
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 32),
             _buildLanguageOption(
               flag: '🇺🇸',
               language: 'English',
               locale: const Locale('en', 'US'),
               isSelected: context.locale.languageCode == 'en',
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             _buildLanguageOption(
-              flag: '🇸🇦',
+              flag: '🇪🇬',
               language: 'العربية',
               locale: const Locale('ar', 'SA'),
               isSelected: context.locale.languageCode == 'ar',
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 32),
           ],
         ),
       ),
@@ -480,56 +658,105 @@ class _IntroScreenState extends State<IntroScreen>
     required Locale locale,
     required bool isSelected,
   }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: () async {
-          HapticFeedback.selectionClick();
-          await context.setLocale(locale);
-          if (mounted) {
-            Navigator.pop(context);
-            setState(() {});
-          }
-        },
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isSelected
-                  ? const Color(0xFFD5860F)
-                  : Colors.grey.withOpacity(0.3),
-              width: 2,
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: isSelected
+            ? LinearGradient(
+                colors: [
+                  Colors.white.withOpacity(0.25),
+                  Colors.white.withOpacity(0.15),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              )
+            : null,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isSelected
+              ? Colors.white.withOpacity(0.6)
+              : Colors.white.withOpacity(0.25),
+          width: 2,
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () async {
+            HapticFeedback.selectionClick();
+            await context.setLocale(locale);
+            if (mounted) {
+              Navigator.pop(context);
+              setState(() {});
+            }
+          },
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Text(flag, style: const TextStyle(fontSize: 28)),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: Text(
+                    language,
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: isSelected
+                          ? FontWeight.w700
+                          : FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                if (isSelected)
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.check,
+                      color: Color.fromARGB(255, 213, 134, 15),
+                      size: 18,
+                    ),
+                  ),
+              ],
             ),
-            color: isSelected
-                ? const Color(0xFFD5860F).withOpacity(0.1)
-                : Colors.transparent,
-          ),
-          child: Row(
-            children: [
-              Text(flag, style: const TextStyle(fontSize: 24)),
-              const SizedBox(width: 16),
-              Text(
-                language,
-                style: GoogleFonts.inter(
-                  fontSize: 16,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                  color: isSelected ? const Color(0xFFD5860F) : Colors.black87,
-                ),
-              ),
-              const Spacer(),
-              if (isSelected)
-                Icon(
-                  Icons.check_circle,
-                  color: const Color(0xFFD5860F),
-                  size: 20,
-                ),
-            ],
           ),
         ),
       ),
     );
   }
+}
+
+class ParticlesPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final basePaint = Paint();
+    final particles = [
+      [0.1, 0.2, 0.12],
+      [0.8, 0.1, 0.08],
+      [0.2, 0.7, 0.15],
+      [0.9, 0.6, 0.1],
+      [0.05, 0.85, 0.07],
+      [0.7, 0.9, 0.13],
+      [0.4, 0.15, 0.09],
+      [0.6, 0.4, 0.11],
+    ];
+
+    for (var p in particles) {
+      final x = size.width * p[0];
+      final y = size.height * p[1];
+      final opacity = p[2] as double;
+      final radius = (opacity * 8).clamp(1.5, 4.0);
+
+      basePaint.color = Colors.white.withOpacity(opacity * 0.6);
+      canvas.drawCircle(Offset(x, y), radius, basePaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

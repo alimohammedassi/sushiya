@@ -2,398 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:sushiaya/screens/home.dart';
+// import 'package:shimmer/main.dart';
+import 'package:sushiaya/screens/home_screen.dart';
 import 'button.dart'; // Your SushiayaButton
-
-// ==================== MODELS ====================
-
-// Cart Item Model
-class CartItem {
-  final int id;
-  final String name;
-  final double price;
-  final String image;
-  final String category;
-  int quantity;
-
-  CartItem({
-    required this.id,
-    required this.name,
-    required this.price,
-    required this.image,
-    required this.category,
-    this.quantity = 1,
-  });
-
-  double get totalPrice => price * quantity;
-
-  factory CartItem.fromSushiItem(dynamic sushiItem, {int quantity = 1}) {
-    return CartItem(
-      id: sushiItem.id,
-      name: sushiItem.name,
-      price: sushiItem.price,
-      image: sushiItem.image,
-      category: sushiItem.category,
-      quantity: quantity,
-    );
-  }
-}
-
-// Payment Method Model
-class PaymentMethod {
-  final String id;
-  final String name;
-  final String icon;
-  final String type; // 'card', 'cash', 'digital'
-  final bool requiresCardDetails;
-
-  PaymentMethod({
-    required this.id,
-    required this.name,
-    required this.icon,
-    required this.type,
-    this.requiresCardDetails = true,
-  });
-}
-
-// Payment Card Details Model
-class PaymentCardDetails {
-  final String cardNumber;
-  final String expiryDate;
-  final String cvv;
-  final String cardholderName;
-  final String paymentMethodId;
-
-  PaymentCardDetails({
-    required this.cardNumber,
-    required this.expiryDate,
-    required this.cvv,
-    required this.cardholderName,
-    required this.paymentMethodId,
-  });
-
-  bool get isValid {
-    final cleanedNumber = cardNumber.replaceAll(' ', '');
-    return cardNumber.isNotEmpty &&
-        expiryDate.isNotEmpty &&
-        cvv.isNotEmpty &&
-        cardholderName.isNotEmpty &&
-        cleanedNumber.length >= 13 &&
-        cleanedNumber.length <= 19 &&
-        cvv.length >= 3;
-  }
-
-  String get maskedCardNumber {
-    final cleaned = cardNumber.replaceAll(' ', '');
-    if (cleaned.length < 4) return cleaned;
-    return '**** **** **** ${cleaned.substring(cleaned.length - 4)}';
-  }
-}
-
-// Delivery Address Model
-class DeliveryAddress {
-  final String id;
-  final String title;
-  final String address;
-  final String city;
-  final String phone;
-  final bool isDefault;
-
-  DeliveryAddress({
-    required this.id,
-    required this.title,
-    required this.address,
-    required this.city,
-    required this.phone,
-    this.isDefault = false,
-  });
-}
-
-// Order Model
-class Order {
-  final String id;
-  final List<CartItem> items;
-  final double total;
-  final PaymentMethod paymentMethod;
-  final PaymentCardDetails? cardDetails;
-  final DeliveryAddress address;
-  final DateTime orderDate;
-  final String status;
-
-  Order({
-    required this.id,
-    required this.items,
-    required this.total,
-    required this.paymentMethod,
-    this.cardDetails,
-    required this.address,
-    required this.orderDate,
-    this.status = 'pending',
-  });
-}
-
-// ==================== PROVIDER ====================
-
-class CartProvider extends ChangeNotifier {
-  final List<CartItem> _items = [];
-  bool _isLoading = false;
-  PaymentMethod? _selectedPaymentMethod;
-  PaymentCardDetails? _cardDetails;
-  DeliveryAddress? _selectedAddress;
-
-  final List<PaymentMethod> _paymentMethods = [
-    PaymentMethod(
-      id: 'visa',
-      name: 'Visa Card',
-      icon: '💳',
-      type: 'card',
-      requiresCardDetails: true,
-    ),
-    PaymentMethod(
-      id: 'mastercard',
-      name: 'Mastercard',
-      icon: '💳',
-      type: 'card',
-      requiresCardDetails: true,
-    ),
-    PaymentMethod(
-      id: 'cash',
-      name: 'Cash on Delivery',
-      icon: '💵',
-      type: 'cash',
-      requiresCardDetails: false,
-    ),
-    PaymentMethod(
-      id: 'wallet',
-      name: 'Digital Wallet',
-      icon: '📱',
-      type: 'digital',
-      requiresCardDetails: false,
-    ),
-  ];
-
-  final List<DeliveryAddress> _addresses = [
-    DeliveryAddress(
-      id: '1',
-      title: 'Home',
-      address: '123 Main Street, Apt 4B',
-      city: 'Alexandria',
-      phone: '+20 123 456 789',
-      isDefault: true,
-    ),
-    DeliveryAddress(
-      id: '2',
-      title: 'Work',
-      address: '456 Business District',
-      city: 'Alexandria',
-      phone: '+20 987 654 321',
-    ),
-  ];
-
-  // Getters
-  List<CartItem> get items => List.unmodifiable(_items);
-  List<PaymentMethod> get paymentMethods => _paymentMethods;
-  List<DeliveryAddress> get addresses => _addresses;
-  PaymentMethod? get selectedPaymentMethod => _selectedPaymentMethod;
-  PaymentCardDetails? get cardDetails => _cardDetails;
-  DeliveryAddress? get selectedAddress =>
-      _selectedAddress ??
-      _addresses.firstWhere(
-        (addr) => addr.isDefault,
-        orElse: () => _addresses.first,
-      );
-  bool get isLoading => _isLoading;
-  int get itemCount => _items.fold(0, (total, item) => total + item.quantity);
-  double get totalAmount =>
-      _items.fold(0.0, (total, item) => total + item.totalPrice);
-  bool get isEmpty => _items.isEmpty;
-  int get uniqueItemCount => _items.length;
-
-  // Setters
-  void setPaymentMethod(PaymentMethod method) {
-    _selectedPaymentMethod = method;
-    if (!method.requiresCardDetails) {
-      _cardDetails = null;
-    }
-    notifyListeners();
-  }
-
-  void setCardDetails(PaymentCardDetails details) {
-    _cardDetails = details;
-    notifyListeners();
-  }
-
-  void setDeliveryAddress(DeliveryAddress address) {
-    _selectedAddress = address;
-    notifyListeners();
-  }
-
-  bool get isPaymentReady {
-    if (_selectedPaymentMethod == null) return false;
-    if (_selectedPaymentMethod!.requiresCardDetails) {
-      return _cardDetails != null && _cardDetails!.isValid;
-    }
-    return true;
-  }
-
-  Future<void> addItem(dynamic sushiItem, {int quantity = 1}) async {
-    _isLoading = true;
-    notifyListeners();
-
-    await Future.delayed(const Duration(milliseconds: 300));
-
-    final existingIndex = _items.indexWhere((item) => item.id == sushiItem.id);
-
-    if (existingIndex >= 0) {
-      _items[existingIndex].quantity += quantity;
-    } else {
-      _items.add(CartItem.fromSushiItem(sushiItem, quantity: quantity));
-    }
-
-    _isLoading = false;
-    notifyListeners();
-  }
-
-  void removeItem(int itemId) {
-    _items.removeWhere((item) => item.id == itemId);
-    notifyListeners();
-  }
-
-  void decreaseQuantity(int itemId) {
-    final existingIndex = _items.indexWhere((item) => item.id == itemId);
-
-    if (existingIndex >= 0) {
-      if (_items[existingIndex].quantity > 1) {
-        _items[existingIndex].quantity--;
-      } else {
-        _items.removeAt(existingIndex);
-      }
-      notifyListeners();
-    }
-  }
-
-  void increaseQuantity(int itemId) {
-    final existingIndex = _items.indexWhere((item) => item.id == itemId);
-
-    if (existingIndex >= 0) {
-      _items[existingIndex].quantity++;
-      notifyListeners();
-    }
-  }
-
-  Future<void> clearCart() async {
-    _isLoading = true;
-    notifyListeners();
-
-    await Future.delayed(const Duration(milliseconds: 300));
-    _items.clear();
-
-    _isLoading = false;
-    notifyListeners();
-  }
-
-  Future<Order?> processOrder() async {
-    if (_items.isEmpty || !isPaymentReady) return null;
-
-    _isLoading = true;
-    notifyListeners();
-
-    await Future.delayed(const Duration(seconds: 2));
-
-    final order = Order(
-      id: 'ORD${DateTime.now().millisecondsSinceEpoch}',
-      items: List.from(_items),
-      total: totalAmount + 5, // Including service fee
-      paymentMethod: _selectedPaymentMethod!,
-      cardDetails: _cardDetails,
-      address: selectedAddress!,
-      orderDate: DateTime.now(),
-    );
-
-    _items.clear();
-    _selectedPaymentMethod = null;
-    _cardDetails = null;
-
-    _isLoading = false;
-    notifyListeners();
-
-    return order;
-  }
-
-  bool isInCart(int itemId) {
-    return _items.any((item) => item.id == itemId);
-  }
-
-  int getItemQuantity(int itemId) {
-    try {
-      return _items.firstWhere((item) => item.id == itemId).quantity;
-    } catch (e) {
-      return 0;
-    }
-  }
-
-  CartItem? getCartItem(int itemId) {
-    try {
-      return _items.firstWhere((item) => item.id == itemId);
-    } catch (e) {
-      return null;
-    }
-  }
-}
-
-// ==================== INPUT FORMATTERS ====================
-
-class CardNumberInputFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    final newText = newValue.text.replaceAll(' ', '');
-
-    if (newText.length > 19) {
-      return oldValue;
-    }
-
-    final buffer = StringBuffer();
-    for (int i = 0; i < newText.length; i++) {
-      buffer.write(newText[i]);
-      if ((i + 1) % 4 == 0 && i + 1 != newText.length) {
-        buffer.write(' ');
-      }
-    }
-
-    final formatted = buffer.toString();
-    return TextEditingValue(
-      text: formatted,
-      selection: TextSelection.collapsed(offset: formatted.length),
-    );
-  }
-}
-
-class ExpiryDateInputFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    final newText = newValue.text.replaceAll('/', '');
-
-    if (newText.length > 4) {
-      return oldValue;
-    }
-
-    String formatted = newText;
-    if (newText.length > 2) {
-      formatted = '${newText.substring(0, 2)}/${newText.substring(2)}';
-    }
-
-    return TextEditingValue(
-      text: formatted,
-      selection: TextSelection.collapsed(offset: formatted.length),
-    );
-  }
-}
+import 'package:sushiaya/providers/cart_provider.dart';
+import 'package:sushiaya/services/location_service.dart';
+import 'package:sushiaya/screens/order_status_screen.dart';
 
 // ==================== MAIN CART SCREEN ====================
 
@@ -663,18 +277,32 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(18),
-                child: Image.network(
-                  item.image,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    color: Colors.grey.shade200,
-                    child: Icon(
-                      Icons.image_not_supported_outlined,
-                      color: Colors.grey.shade400,
-                      size: 30,
-                    ),
-                  ),
-                ),              ),
+                child: item.image.startsWith('http')
+                    ? Image.network(
+                        item.image,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: Colors.grey.shade200,
+                          child: Icon(
+                            Icons.image_not_supported_outlined,
+                            color: Colors.grey.shade400,
+                            size: 30,
+                          ),
+                        ),
+                      )
+                    : Image.asset(
+                        item.image,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: Colors.grey.shade200,
+                          child: Icon(
+                            Icons.image_not_supported_outlined,
+                            color: Colors.grey.shade400,
+                            size: 30,
+                          ),
+                        ),
+                      ),
+              ),
             ),
           ),
           const SizedBox(width: 16),
@@ -955,7 +583,7 @@ class CheckoutBottomSheet extends StatefulWidget {
   final CartProvider cartProvider;
 
   const CheckoutBottomSheet({Key? key, required this.cartProvider})
-      : super(key: key);
+    : super(key: key);
 
   @override
   State<CheckoutBottomSheet> createState() => _CheckoutBottomSheetState();
@@ -1024,7 +652,10 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
     final cardholderName = _cardholderController.text;
 
     // Check if all fields are filled
-    if (cardNumber.isEmpty || expiryDate.isEmpty || cvv.isEmpty || cardholderName.isEmpty) {
+    if (cardNumber.isEmpty ||
+        expiryDate.isEmpty ||
+        cvv.isEmpty ||
+        cardholderName.isEmpty) {
       return false;
     }
 
@@ -1119,6 +750,25 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
                   children: [
                     // Delivery Address Section
                     _SectionTitle(title: 'Delivery Address'),
+                    _UseCurrentLocationButton(
+                      onResolved: (addr) {
+                        setState(() {
+                          selectedAddress = DeliveryAddress(
+                            id: 'gps',
+                            title: 'Current Location',
+                            address: addr,
+                            city: '',
+                            phone:
+                                widget.cartProvider.selectedAddress?.phone ??
+                                '',
+                            isDefault: false,
+                          );
+                        });
+                        widget.cartProvider.setDeliveryAddress(
+                          selectedAddress!,
+                        );
+                      },
+                    ),
                     _AddressSelector(
                       addresses: widget.cartProvider.addresses,
                       selectedAddress: selectedAddress,
@@ -1380,7 +1030,11 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
               width: double.infinity,
               onPressed: () {
                 Navigator.of(context).pop();
-                _showOrderTrackingDialog(order);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => OrderStatusScreen(order: order),
+                  ),
+                );
               },
             ),
             const SizedBox(height: 8),
@@ -1388,7 +1042,7 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
               onPressed: () {
                 Navigator.of(context)
                     .pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                      MaterialPageRoute(builder: (context) => HomeTabScreen()),
                       (Route<dynamic> route) => false,
                     )
                     .then((_) {
@@ -1404,7 +1058,8 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              backgroundColor: Colors.green.shade600 ,duration: const Duration(seconds: 3),
+                              backgroundColor: Colors.green.shade600,
+                              duration: const Duration(seconds: 3),
                               behavior: SnackBarBehavior.floating,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -1483,21 +1138,21 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
               color: isCompleted
                   ? const Color(0xFFD5860F)
                   : isActive
-                      ? const Color(0xFFD5860F).withOpacity(0.3)
-                      : Colors.grey.shade300,
+                  ? const Color(0xFFD5860F).withOpacity(0.3)
+                  : Colors.grey.shade300,
               shape: BoxShape.circle,
             ),
             child: isCompleted
                 ? const Icon(Icons.check, color: Colors.white, size: 16)
                 : isActive
-                    ? Container(
-                        margin: const EdgeInsets.all(6),
-                        decoration: const BoxDecoration(
-                          color: Color(0xFFD5860F),
-                          shape: BoxShape.circle,
-                        ),
-                      )
-                    : null,
+                ? Container(
+                    margin: const EdgeInsets.all(6),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFD5860F),
+                      shape: BoxShape.circle,
+                    ),
+                  )
+                : null,
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -1505,8 +1160,9 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
               title,
               style: GoogleFonts.lato(
                 fontSize: 16,
-                fontWeight:
-                    isCompleted || isActive ? FontWeight.bold : FontWeight.normal,
+                fontWeight: isCompleted || isActive
+                    ? FontWeight.bold
+                    : FontWeight.normal,
                 color: isCompleted || isActive
                     ? Colors.grey.shade800
                     : Colors.grey.shade500,
@@ -1545,6 +1201,75 @@ class _SectionTitle extends StatelessWidget {
   }
 }
 
+class _UseCurrentLocationButton extends StatefulWidget {
+  final ValueChanged<String> onResolved;
+  const _UseCurrentLocationButton({Key? key, required this.onResolved})
+    : super(key: key);
+
+  @override
+  State<_UseCurrentLocationButton> createState() =>
+      _UseCurrentLocationButtonState();
+}
+
+class _UseCurrentLocationButtonState extends State<_UseCurrentLocationButton> {
+  bool _loading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: ElevatedButton.icon(
+          onPressed: _loading ? null : _resolve,
+          icon: const Icon(Icons.my_location_rounded, color: Colors.white),
+          label: Text(
+            'Use current location',
+            style: GoogleFonts.lato(color: Colors.white),
+          ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFFD5860F),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _resolve() async {
+    setState(() => _loading = true);
+    try {
+      final service = await LocationService.getCurrent();
+      final address =
+          service.address ??
+          '${service.latitude.toStringAsFixed(5)}, ${service.longitude.toStringAsFixed(5)}';
+      widget.onResolved(address);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Location set', style: GoogleFonts.lato()),
+            backgroundColor: const Color(0xFFD5860F),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Location error: $e', style: GoogleFonts.lato()),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+}
+
 class _AddressSelector extends StatelessWidget {
   final List<DeliveryAddress> addresses;
   final DeliveryAddress? selectedAddress;
@@ -1571,7 +1296,9 @@ class _AddressSelector extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: isSelected ? const Color(0xFFD5860F) : Colors.grey.shade300,
+                  color: isSelected
+                      ? const Color(0xFFD5860F)
+                      : Colors.grey.shade300,
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(16),
@@ -1583,7 +1310,9 @@ class _AddressSelector extends StatelessWidget {
                 children: [
                   Icon(
                     address.title == 'Home' ? Icons.home : Icons.work,
-                    color: isSelected ? const Color(0xFFD5860F) : Colors.grey.shade600,
+                    color: isSelected
+                        ? const Color(0xFFD5860F)
+                        : Colors.grey.shade600,
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -1610,7 +1339,9 @@ class _AddressSelector extends StatelessWidget {
                                   vertical: 2,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFD5860F).withOpacity(0.2),
+                                  color: const Color(
+                                    0xFFD5860F,
+                                  ).withOpacity(0.2),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Text(
@@ -1706,7 +1437,9 @@ class _PaymentMethodSelector extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: isSelected ? const Color(0xFFD5860F) : Colors.grey.shade300,
+                  color: isSelected
+                      ? const Color(0xFFD5860F)
+                      : Colors.grey.shade300,
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(16),
@@ -1907,7 +1640,9 @@ class _CardDetailsForm extends StatelessWidget {
                     if (value == null || value.isEmpty) {
                       return 'Required';
                     }
-                    final match = RegExp(r'^(\d{2})/(\d{2})$').firstMatch(value);
+                    final match = RegExp(
+                      r'^(\d{2})/(\d{2})$',
+                    ).firstMatch(value);
                     if (match == null) {
                       return 'Invalid format';
                     }
@@ -2103,7 +1838,7 @@ class _SummaryRow extends StatelessWidget {
   final String value;
 
   const _SummaryRow({Key? key, required this.label, required this.value})
-      : super(key: key);
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -2147,13 +1882,11 @@ class _InfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment:
-          valueAlignEnd ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
+      mainAxisAlignment: valueAlignEnd
+          ? MainAxisAlignment.spaceBetween
+          : MainAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: GoogleFonts.lato(fontSize: 12),
-        ),
+        Text(label, style: GoogleFonts.lato(fontSize: 12)),
         Expanded(
           child: Text(
             value,
